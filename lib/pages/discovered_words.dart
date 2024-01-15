@@ -1,10 +1,9 @@
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-
-import 'root_widget.dart';
+import 'package:memofante/dict.dart';
 
 class DiscoveredWords extends StatefulWidget {
-  const DiscoveredWords({super.key, required this.title});
-  final String title;
+  const DiscoveredWords({super.key});
   @override
   State<DiscoveredWords> createState() => _DiscoveredWordsState();
 }
@@ -15,12 +14,11 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
     super.initState();
     Future.delayed(const Duration(seconds: 1), () async {
       final snackbarController = ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              duration: Duration(days: 365),
+          SnackBar(
+              duration: const Duration(days: 365),
               content: Text(
-                  "Downloading dictionary, lookup results maybe incomplete or broken during this process...")));
-      await dictionary.download();
-      snackbarController.close();
+                  AppLocalizations.of(context)!.snackbars__downloadingDict)));
+      dictionary.download().whenComplete(snackbarController.close);
     });
   }
 
@@ -28,12 +26,13 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title:
+            Text(AppLocalizations.of(context)!.pages__discoveredWords__title),
       ),
       body: const Text("todo"),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {},
-        tooltip: 'Add word',
+        tooltip: AppLocalizations.of(context)!.pages__discoveredWords__add,
         child: const Icon(Icons.add),
       ),
     );

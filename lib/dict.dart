@@ -1,3 +1,5 @@
+import 'jm_dict_impl.dart';
+
 class DictEntry {
   /// The ID of this entry, it is unique to this entry,
   /// so if you need to check for word uniqueness, use this id instead of the `word` field.
@@ -33,3 +35,5 @@ abstract class Dictionary {
   List<DictEntry> searchFromJPWord(String word);
   List<DictEntry> searchFromENWord(String word);
 }
+
+final Dictionary dictionary = JMDictDictionary();
