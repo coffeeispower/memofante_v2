@@ -29,7 +29,10 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  jm_dict: 0.2.0
+  jm_dict:
+    git:
+      url: https://github.com/coffee-is-power/jm_dict_flutter.git
+      ref: ab6b816a8c0b31cb2853d64f4c6b3e312399a531
   flutter_launcher_icons: ^0.13.1
   flutter:
     sdk: flutter
@@ -41,6 +44,10 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
+  objectbox: ^2.4.0
+  objectbox_flutter_libs: ^2.4.0
+  path_provider: ^2.1.2
+  modal_bottom_sheet: 3.0.0-pre
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +59,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  build_runner: ^2.4.8
+  objectbox_generator: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

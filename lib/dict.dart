@@ -34,6 +34,7 @@ abstract class Dictionary {
   Future<void> download();
   List<DictEntry> searchFromJPWord(String word);
   List<DictEntry> searchFromENWord(String word);
+  DictEntry? searchEntryFromId(int id);
 }
 
 final Dictionary dictionary = JMDictDictionary();

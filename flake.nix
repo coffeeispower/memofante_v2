@@ -25,6 +25,8 @@
               jdk17
               dart
               android.platform-tools
+              cmake
+              ninja
             ];
 
             ANDROID_HOME = "${android.androidsdk}/libexec/android-sdk";
