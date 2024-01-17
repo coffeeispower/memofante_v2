@@ -125,19 +125,18 @@ class DiscoveredWordItem extends StatelessWidget {
   }
 
   void _handleMenuAction(String choice, DiscoveredWord word) {
-    print("BROOOOOOOOOOOOOOOOOO");
     switch (choice) {
       case "delete":
         discoveredWordsBox
             .query(DiscoveredWord_.entryNumber.equals(word.entryNumber))
             .build()
             .remove();
-        print("Deleted entry " + word.entryNumber.toString());
+
         break;
       case "show_stats":
         break;
       default:
-        print("Invalid option");
+        throw UnimplementedError("$choice is not implemented yet");
     }
   }
 }
