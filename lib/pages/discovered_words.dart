@@ -29,9 +29,6 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
         .watch(triggerImmediately: true)
         .map((event) => event.find())
         .listen((words) {
-      for (int i = 0; i < 100; i++) {
-        print("UPDATED");
-      }
       setState(() {
         discoveredWordsList = words;
       });
@@ -57,18 +54,18 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text(AppLocalizations.of(context)!.pages__discoveredWords__title),
+        title: Text(t.pages__discoveredWords__title),
       ),
       body: dictionaryIsLoaded
           ? ListView(
               children: discoveredWordsList
-                  .map((e) => ListTile(
-                      title: Text(dictionary
-                          .searchEntryFromId(e.entryNumber)!
-                          .word[0])))
+                  .map((e) => DiscoveredWordItem(
+                        discoveredWordsBox: discoveredWordsBox,
+                        word: e,
+                      ))
                   .toList(),
             )
           : const Text("Loading dictionary..."),
@@ -84,10 +81,64 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
                 AddDiscoveredWordModal(discoveredWordsBox: discoveredWordsBox),
           );
         },
-        tooltip: AppLocalizations.of(context)!.pages__discoveredWords__add,
+        tooltip: t.pages__discoveredWords__add,
         child: const Icon(Icons.add),
       ),
     );
+  }
+}
+
+class DiscoveredWordItem extends StatelessWidget {
+  const DiscoveredWordItem(
+      {super.key, required this.discoveredWordsBox, required this.word});
+  final DiscoveredWord word;
+  final Box<DiscoveredWord> discoveredWordsBox;
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+        trailing: PopupMenuButton<String>(
+          onSelected: (String choice) {
+            _handleMenuAction(choice, word);
+          },
+          itemBuilder: (BuildContext context) {
+            final t = AppLocalizations.of(context)!;
+            return [
+              PopupMenuItem<String>(
+                value: "show_stats",
+                mouseCursor: SystemMouseCursors.click,
+                child: ListTile(
+                    leading: const Icon(Icons.bar_chart),
+                    title: Text(t.pages__discoveredWords__contextMenu__stats)),
+              ),
+              PopupMenuItem<String>(
+                value: "delete",
+                mouseCursor: SystemMouseCursors.click,
+                child: ListTile(
+                    leading: const Icon(Icons.delete),
+                    title: Text(t.pages__discoveredWords__contextMenu__delete)),
+              ),
+              // Add more menu items as needed
+            ];
+          },
+        ),
+        title: Text(dictionary.searchEntryFromId(word.entryNumber)!.word[0]));
+  }
+
+  void _handleMenuAction(String choice, DiscoveredWord word) {
+    print("BROOOOOOOOOOOOOOOOOO");
+    switch (choice) {
+      case "delete":
+        discoveredWordsBox
+            .query(DiscoveredWord_.entryNumber.equals(word.entryNumber))
+            .build()
+            .remove();
+        print("Deleted entry " + word.entryNumber.toString());
+        break;
+      case "show_stats":
+        break;
+      default:
+        print("Invalid option");
+    }
   }
 }
 

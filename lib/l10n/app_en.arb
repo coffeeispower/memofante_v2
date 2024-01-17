@@ -1,5 +1,7 @@
 {
   "pages__discoveredWords__title": "Discovered Words",
   "pages__discoveredWords__add": "Add word",
+  "pages__discoveredWords__contextMenu__stats": "Statistics",
+  "pages__discoveredWords__contextMenu__delete": "Delete",
   "snackbars__downloadingDict": "Downloading dictionary, lookup results maybe incomplete or broken during this process..."
 }

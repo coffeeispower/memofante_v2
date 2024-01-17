@@ -1,5 +1,7 @@
 {
   "pages__discoveredWords__title": "Palavras descobertas",
   "pages__discoveredWords__add": "Adicionar palavra",
+  "pages__discoveredWords__contextMenu__stats": "Estatisticas",
+  "pages__discoveredWords__contextMenu__delete": "Deletar",
   "snackbars__downloadingDict": "A baixar o dicionário... Os resultados de busca podem estar incompletos ou quebrados durante este processo."
 }
