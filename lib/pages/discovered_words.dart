@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:memofante/dict.dart';
@@ -15,17 +17,42 @@ class DiscoveredWords extends StatefulWidget {
 
 class _DiscoveredWordsState extends State<DiscoveredWords> {
   final discoveredWordsBox = objectBox.store.box<DiscoveredWord>();
+  late List<DiscoveredWord> discoveredWordsList;
+  late StreamSubscription<List<DiscoveredWord>> discoveredWordsSubscription;
+  var dictionaryIsLoaded = false;
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 1), () async {
+
+    discoveredWordsSubscription = discoveredWordsBox
+        .query()
+        .watch(triggerImmediately: true)
+        .map((event) => event.find())
+        .listen((words) {
+      for (int i = 0; i < 100; i++) {
+        print("UPDATED");
+      }
+      setState(() {
+        discoveredWordsList = words;
+      });
+    });
+    Future.delayed(const Duration(milliseconds: 200), () {
       final snackbarController = ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               duration: const Duration(days: 365),
               content: Text(
                   AppLocalizations.of(context)!.snackbars__downloadingDict)));
-      dictionary.download().whenComplete(snackbarController.close);
+      dictionary.download().whenComplete(() {
+        snackbarController.close();
+        setState(() => dictionaryIsLoaded = true);
+      });
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    discoveredWordsSubscription.cancel();
   }
 
   @override
@@ -35,14 +62,16 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
         title:
             Text(AppLocalizations.of(context)!.pages__discoveredWords__title),
       ),
-      body: ListView(
-        children: discoveredWordsBox
-            .getAll()
-            .map((e) => ListTile(
-                title:
-                    Text(dictionary.searchEntryFromId(e.entryNumber)!.word[0])))
-            .toList(),
-      ),
+      body: dictionaryIsLoaded
+          ? ListView(
+              children: discoveredWordsList
+                  .map((e) => ListTile(
+                      title: Text(dictionary
+                          .searchEntryFromId(e.entryNumber)!
+                          .word[0])))
+                  .toList(),
+            )
+          : const Text("Loading dictionary..."),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showMaterialModalBottomSheet(

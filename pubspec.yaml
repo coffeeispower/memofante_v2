@@ -32,7 +32,7 @@ dependencies:
   jm_dict:
     git:
       url: https://github.com/coffee-is-power/jm_dict_flutter.git
-      ref: ab6b816a8c0b31cb2853d64f4c6b3e312399a531
+      ref: a76537cc6f423c9fa1394b557df13dfe13c6be18
   flutter_launcher_icons: ^0.13.1
   flutter:
     sdk: flutter
