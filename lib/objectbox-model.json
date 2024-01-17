@@ -5,14 +5,15 @@
   "entities": [
     {
       "id": "1:6752048034514049591",
-      "lastPropertyId": "5:8487175969304409037",
+      "lastPropertyId": "6:540593637611515591",
       "name": "DiscoveredWord",
       "properties": [
         {
           "id": "1:3839526099041725299",
           "name": "entryNumber",
           "type": 6,
-          "flags": 1
+          "flags": 40,
+          "indexId": "1:4633317927544905904"
         },
         {
           "id": "2:2948905778078834034",
@@ -33,13 +34,19 @@
           "id": "5:8487175969304409037",
           "name": "successReadingReviews",
           "type": 6
+        },
+        {
+          "id": "6:540593637611515591",
+          "name": "id",
+          "type": 6,
+          "flags": 1
         }
       ],
       "relations": []
     }
   ],
   "lastEntityId": "1:6752048034514049591",
-  "lastIndexId": "0:0",
+  "lastIndexId": "1:4633317927544905904",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

@@ -4,7 +4,7 @@
 // With a Dart package, run `dart run build_runner build`.
 // See also https://docs.objectbox.io/getting-started#generate-objectbox-code
 
-// ignore_for_file: camel_case_types
+// ignore_for_file: camel_case_types, depend_on_referenced_packages
 // coverage:ignore-file
 
 import 'dart:typed_data';
@@ -22,14 +22,15 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(1, 6752048034514049591),
       name: 'DiscoveredWord',
-      lastPropertyId: const IdUid(5, 8487175969304409037),
+      lastPropertyId: const IdUid(6, 540593637611515591),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
             id: const IdUid(1, 3839526099041725299),
             name: 'entryNumber',
             type: 6,
-            flags: 1),
+            flags: 40,
+            indexId: const IdUid(1, 4633317927544905904)),
         ModelProperty(
             id: const IdUid(2, 2948905778078834034),
             name: 'failedMeaningReviews',
@@ -49,13 +50,24 @@ final _entities = <ModelEntity>[
             id: const IdUid(5, 8487175969304409037),
             name: 'successReadingReviews',
             type: 6,
-            flags: 0)
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(6, 540593637611515591),
+            name: 'id',
+            type: 6,
+            flags: 1)
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[])
 ];
 
-/// Open an ObjectBox store with the model declared in this file.
+/// Shortcut for [Store.new] that passes [getObjectBoxModel] and for Flutter
+/// apps by default a [directory] using `defaultStoreDirectory()` from the
+/// ObjectBox Flutter library.
+///
+/// Note: for desktop apps it is recommended to specify a unique [directory].
+///
+/// See [Store.new] for an explanation of all parameters.
 Future<Store> openStore(
         {String? directory,
         int? maxDBSizeInKB,
@@ -71,12 +83,13 @@ Future<Store> openStore(
         queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
         macosApplicationGroup: macosApplicationGroup);
 
-/// ObjectBox model definition, pass it to [Store] - Store(getObjectBoxModel())
+/// Returns the ObjectBox model definition for this project for use with
+/// [Store.new].
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
       lastEntityId: const IdUid(1, 6752048034514049591),
-      lastIndexId: const IdUid(0, 0),
+      lastIndexId: const IdUid(1, 4633317927544905904),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [],
@@ -97,30 +110,38 @@ ModelDefinition getObjectBoxModel() {
           object.entryNumber = id;
         },
         objectToFB: (DiscoveredWord object, fb.Builder fbb) {
-          fbb.startTable(6);
+          fbb.startTable(7);
           fbb.addInt64(0, object.entryNumber);
           fbb.addInt64(1, object.failedMeaningReviews);
           fbb.addInt64(2, object.failedReadingReviews);
           fbb.addInt64(3, object.successMeaningReviews);
           fbb.addInt64(4, object.successReadingReviews);
+          fbb.addInt64(5, object.id);
           fbb.finish(fbb.endTable());
           return object.entryNumber;
         },
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final entryNumberParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final successMeaningReviewsParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
+          final failedMeaningReviewsParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0);
+          final successReadingReviewsParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
+          final failedReadingReviewsParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
           final object = DiscoveredWord(
-              entryNumber:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              successMeaningReviews:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0),
-              failedMeaningReviews:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0),
-              successReadingReviews:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0),
-              failedReadingReviews:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0));
+              entryNumber: entryNumberParam,
+              successMeaningReviews: successMeaningReviewsParam,
+              failedMeaningReviews: failedMeaningReviewsParam,
+              successReadingReviews: successReadingReviewsParam,
+              failedReadingReviews: failedReadingReviewsParam,
+              id: idParam);
 
           return object;
         })
@@ -150,4 +171,8 @@ class DiscoveredWord_ {
   /// see [DiscoveredWord.successReadingReviews]
   static final successReadingReviews =
       QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[4]);
+
+  /// see [DiscoveredWord.id]
+  static final id =
+      QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[5]);
 }

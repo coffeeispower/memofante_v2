@@ -48,6 +48,9 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
           showMaterialModalBottomSheet(
             context: context,
             bounce: true,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(20), bottom: Radius.circular(0))),
             builder: (context) =>
                 AddDiscoveredWordModal(discoveredWordsBox: discoveredWordsBox),
           );
@@ -95,7 +98,22 @@ class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
             ),
           ] +
           results
-              .map((result) => WordSearchResultListTile(entry: result))
+              .map((result) => WordSearchResultListTile(
+                    entry: result,
+                    onAdd: !widget.discoveredWordsBox.contains(result.id)
+                        ? (entry) {
+                            widget.discoveredWordsBox.put(
+                                DiscoveredWord(
+                                    entryNumber: entry.id,
+                                    successMeaningReviews: 0,
+                                    failedMeaningReviews: 0,
+                                    successReadingReviews: 0,
+                                    failedReadingReviews: 0),
+                                mode: PutMode.insert);
+                            Navigator.of(context).pop();
+                          }
+                        : null,
+                  ))
               .toList(),
     );
   }
@@ -103,19 +121,26 @@ class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
 
 class WordSearchResultListTile extends StatelessWidget {
   final DictEntry entry;
-  const WordSearchResultListTile({super.key, required this.entry});
+  final void Function(DictEntry entry)? onAdd;
+  const WordSearchResultListTile({super.key, required this.entry, this.onAdd});
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(entry.word.join(", ")),
-      onTap: () => {},
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-              Text(entry.readings.reversed.join(", ")),
-            ] +
-            entry.meanings.map((e) => Text(" - " + e.join(", "))).toList(),
+    return Card(
+      child: ListTile(
+        title: Text(
+            "${entry.word.join(", ")} (${entry.readings.reversed.join(", ")})"),
+        trailing: onAdd != null
+            ? IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () => onAdd!(entry),
+                color: Colors.blue)
+            : null,
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children:
+              entry.meanings.map((e) => Text(" - ${e.join(", ")}")).toList(),
+        ),
       ),
     );
   }
