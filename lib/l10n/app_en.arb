@@ -3,5 +3,16 @@
   "pages__discoveredWords__add": "Add word",
   "pages__discoveredWords__contextMenu__stats": "Statistics",
   "pages__discoveredWords__contextMenu__delete": "Delete",
+  "snackbars__discoveredWord__deleted": "The word {discoveredWord} was removed from your discovered words list.",
+  "@snackbars__discoveredWord__deleted": {
+    "description": "The snackbar that is shown when a discovered word is deleted",
+    "placeholders":  {
+      "discoveredWord": {
+        "type": "String",
+        "example": "言葉"
+      }
+    }
+  },
+
   "snackbars__downloadingDict": "Downloading dictionary, lookup results maybe incomplete or broken during this process..."
 }

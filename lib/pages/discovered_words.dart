@@ -93,12 +93,14 @@ class DiscoveredWordItem extends StatelessWidget {
       {super.key, required this.discoveredWordsBox, required this.word});
   final DiscoveredWord word;
   final Box<DiscoveredWord> discoveredWordsBox;
+  String get wordStringOfDiscoveredWord =>
+      dictionary.searchEntryFromId(word.entryNumber)!.word[0];
   @override
   Widget build(BuildContext context) {
     return ListTile(
         trailing: PopupMenuButton<String>(
           onSelected: (String choice) {
-            _handleMenuAction(choice, word);
+            _handleMenuAction(choice, context);
           },
           itemBuilder: (BuildContext context) {
             final t = AppLocalizations.of(context)!;
@@ -121,17 +123,27 @@ class DiscoveredWordItem extends StatelessWidget {
             ];
           },
         ),
-        title: Text(dictionary.searchEntryFromId(word.entryNumber)!.word[0]));
+        title: Text(this.wordStringOfDiscoveredWord));
   }
 
-  void _handleMenuAction(String choice, DiscoveredWord word) {
+  void _handleMenuAction(String choice, BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     switch (choice) {
       case "delete":
         discoveredWordsBox
             .query(DiscoveredWord_.entryNumber.equals(word.entryNumber))
             .build()
             .remove();
-
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(t.snackbars__discoveredWord__deleted(
+              this.wordStringOfDiscoveredWord)),
+          action: SnackBarAction(
+              label: "Undo",
+              onPressed: () {
+                word.id = 0;
+                discoveredWordsBox.put(word);
+              }),
+        ));
         break;
       case "show_stats":
         break;
