@@ -1,8 +1,16 @@
 {
+  "@@locale": "pt",
   "pages__discoveredWords__title": "Palavras descobertas",
   "pages__discoveredWords__add": "Adicionar palavra",
   "pages__discoveredWords__contextMenu__stats": "Estatisticas",
   "pages__discoveredWords__contextMenu__delete": "Deletar",
   "snackbars__discoveredWord__deleted": "A palavra {discoveredWord} foi removida da tua lista de palavras descobertas.",
-  "snackbars__downloadingDict": "A baixar o dicionário... Os resultados de busca podem estar incompletos ou quebrados durante este processo."
+  "snackbars__downloadingDict": "A baixar o dicionário... Os resultados de busca podem estar incompletos ou quebrados durante este processo.",
+  
+  "dialogs__startReview__title": "Começar review",
+  "dialogs__startReview_description": "Clica em \"Começar\" para começar um novo review ou \"Voltar\" se não estiveres pronto.",
+  "dialogs__startReview__enableReadingExercises": "Ativar exercicios de leitura/pronuncia",
+  "dialogs__startReview__enableMeaningExercises": "Ativar exercicios de significado",
+  "dialogs__startReview__ok": "Começar",
+  "dialogs__startReview__cancel": "Voltar"
 }

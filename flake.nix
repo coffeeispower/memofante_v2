@@ -15,7 +15,44 @@
           config.allowUnfree = true;
           config.android_sdk.accept_license = true;
         };
+        objectbox-c = with pkgs;
+          stdenv.mkDerivation rec {
+            pname = "objectbox-c";
+            version = "0.20.0";
+            src = fetchurl {
+              url = "https://github.com/objectbox/${pname}/releases/download/v${version}/objectbox-linux-x64.tar.gz";
+              sha256 = "sha256-GP1U3djSWZVrFTIq2aFoWGpmKW1ldk+fwb3RfrGsruo=";
+            };
+            nativeBuildInputs = [
+              autoPatchelfHook
+            ];
+
+            buildInputs = [
+              stdenv.cc.cc.lib
+            ];
+
+            sourceRoot = ".";
+
+            installPhase = ''
+              runHook preInstall
+              mkdir $out
+              mv $PWD/* $out
+              mkdir $out/lib/pkgconfig
+              cat >$out/lib/pkgconfig/objectbox.pc <<EOF
+                prefix=$out
+                includedir=$out/include
+                libdir=''${prefix}/lib
+                Name: libobjectbox
+                Description: Database Library
+                Version: ${version}
+                Libs: -L\''${libdir} -lobjectbox
+                Cflags: -I\''${includedir}
+              EOF
+              runHook postInstall
+            '';
+          };
       in {
+        
         devShells.default =
           let android = pkgs.callPackage ./nix/android.nix { };
           in pkgs.mkShell {
@@ -27,6 +64,7 @@
               android.platform-tools
               cmake
               ninja
+              objectbox-c
             ];
 
             ANDROID_HOME = "${android.androidsdk}/libexec/android-sdk";

@@ -6,7 +6,7 @@ import 'package:memofante/dict.dart';
 import 'package:memofante/main.dart';
 import 'package:memofante/objectbox.g.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
+import './review_page.dart';
 import '../models/discovered_word.dart';
 
 class DiscoveredWords extends StatefulWidget {
@@ -58,6 +58,19 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
     return Scaffold(
       appBar: AppBar(
         title: Text(t.pages__discoveredWords__title),
+        actions: [
+          TextButton.icon(
+            icon: const Icon(Icons.remove_red_eye),
+            label: const Text("Review"),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => ReviewConfirmationDialog(
+                    discoveredWordsBox: discoveredWordsBox),
+              );
+            },
+          ),
+        ],
       ),
       body: dictionaryIsLoaded
           ? ListView(
@@ -84,6 +97,86 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
         tooltip: t.pages__discoveredWords__add,
         child: const Icon(Icons.add),
       ),
+    );
+  }
+}
+
+class ReviewConfirmationDialog extends StatefulWidget {
+  const ReviewConfirmationDialog({
+    super.key,
+    required this.discoveredWordsBox,
+  });
+  final Box<DiscoveredWord> discoveredWordsBox;
+
+  @override
+  State<ReviewConfirmationDialog> createState() =>
+      _ReviewConfirmationDialogState();
+}
+
+class _ReviewConfirmationDialogState extends State<ReviewConfirmationDialog> {
+  bool enableReadingExercises = true;
+  bool enableMeaningExercises = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    return AlertDialog(
+      title: Text(t.dialogs__startReview__title),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(t.dialogs__startReview__description),
+          Row(
+            children: [
+              Checkbox(
+                  value: enableReadingExercises,
+                  onChanged: ((value) =>
+                      setState(() => enableReadingExercises = value!))),
+              Text(t.dialogs__startReview__enableReadingExercises,
+                  softWrap: true)
+            ],
+          ),
+          Row(
+            children: [
+              Checkbox(
+                  value: enableMeaningExercises,
+                  onChanged: ((value) =>
+                      setState(() => enableMeaningExercises = value!))),
+              Text(
+                t.dialogs__startReview__enableMeaningExercises,
+                softWrap: true,
+              )
+            ],
+          )
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            t.dialogs__startReview__cancel,
+            style: const TextStyle(color: Colors.red),
+          ),
+        ),
+        TextButton(
+          onPressed: !enableMeaningExercises && !enableReadingExercises
+              ? null
+              : () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                        body: ReviewPage(
+                      discoveredWordBox: widget.discoveredWordsBox,
+                      enableReadingExercises: enableReadingExercises,
+                      enableMeaningExercises: enableMeaningExercises,
+                    )),
+                  ));
+                },
+          child: Text(t.dialogs__startReview__ok),
+        )
+      ],
     );
   }
 }
@@ -163,9 +256,10 @@ class AddDiscoveredWordModal extends StatefulWidget {
 class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
   String keyword = "";
   List<DictEntry> results = [];
-  void _search(String word) {
-    this.keyword = word;
-    this.results = dictionary.searchFromJPWord(this.keyword);
+  void _search() {
+    setState(() {
+      this.results = dictionary.searchFromJPWord(this.keyword);
+    });
   }
 
   @override
@@ -173,21 +267,38 @@ class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
     return ListView(
       controller: ModalScrollController.of(context),
       children: <Widget>[
+            // This is the little handle at the top, so the user knows that he can drag this down to dismiss
+            Container(
+              height: 5,
+              margin: const EdgeInsets.symmetric(
+                  vertical: 4 * 3, horizontal: 4 * 32),
+              decoration: BoxDecoration(
+                color: Theme.of(context).dividerColor.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              // Searh Box
               child: TextField(
-                onChanged: (value) => setState(() => this.keyword = keyword),
-                onSubmitted: _search,
-                decoration: const InputDecoration(
+                onChanged: (value) => this.keyword = value,
+                onEditingComplete: _search,
+                decoration: InputDecoration(
                     contentPadding:
-                        EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     hintText: "言葉を入力してください",
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: "Search",
-                    prefixIcon: Icon(Icons.search)),
+                    prefixIcon: IconButton(
+                      icon: const Icon(Icons.search),
+                      hoverColor: Colors.transparent,
+                      mouseCursor: SystemMouseCursors.basic,
+                      onPressed: _search,
+                    )),
               ),
             ),
           ] +
+          // The results
           results
               .map((result) => WordSearchResultListTile(
                     entry: result,

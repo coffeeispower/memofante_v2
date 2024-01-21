@@ -1,4 +1,5 @@
 {
+  "@@locale": "en",
   "pages__discoveredWords__title": "Discovered Words",
   "pages__discoveredWords__add": "Add word",
   "pages__discoveredWords__contextMenu__stats": "Statistics",
@@ -13,6 +14,20 @@
       }
     }
   },
+  "snackbars__downloadingDict": "Downloading dictionary, lookup results maybe incomplete or broken during this process...",
+  "dialogs__startReview__title": "Start review",
+  "dialogs__startReview__description": "Click \"Start\" to start a new review",
+  "dialogs__startReview__enableReadingExercises": "Enable reading exercises",
+  "dialogs__startReview__enableMeaningExercises": "Enable meaning exercises",
+  "dialogs__startReview__ok": "Start",
+  "dialogs__startReview__cancel": "Cancel",
 
-  "snackbars__downloadingDict": "Downloading dictionary, lookup results maybe incomplete or broken during this process..."
+  "readingExercise__question": "Write {word} in hiragana",
+  "@readingExercise__question": {
+    "placeholders": {
+      "word":{
+        "type": "String"
+      }
+    }
+  }
 }

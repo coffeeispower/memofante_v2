@@ -27,6 +27,18 @@ class DiscoveredWord {
   int get totalMeaningReviews => successMeaningReviews + failedMeaningReviews;
   int get totalReviews => totalReadingReviews + totalMeaningReviews;
 
+  DateTime? lastReadingReview;
+  DateTime? lastMeaningReview;
+  DateTime? get lastReview {
+    List<DateTime?> reviewDates = [lastReadingReview, lastMeaningReview];
+    return reviewDates.where((date) => date != null).fold<DateTime?>(null,
+        (maxDate, currentDate) {
+      return maxDate == null || currentDate!.isAfter(maxDate)
+          ? currentDate
+          : maxDate;
+    });
+  }
+
   DiscoveredWord(
       {required this.entryNumber,
       required this.successMeaningReviews,
