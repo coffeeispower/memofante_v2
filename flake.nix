@@ -64,6 +64,7 @@
               cmake
               ninja
               objectbox-c
+              xdg-user-dirs
             ];
 
             ANDROID_HOME = "${android.androidsdk}/libexec/android-sdk";
