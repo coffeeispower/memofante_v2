@@ -9,7 +9,7 @@
   
   "dialogs__startReview__title": "Começar review",
   "dialogs__startReview_description": "Clica em \"Começar\" para começar um novo review ou \"Voltar\" se não estiveres pronto.",
-  "dialogs__startReview__enableReadingExercises": "Ativar exercicios de leitura/pronuncia",
+  "dialogs__startReview__enableReadingExercises": "Ativar exercicios de leitura",
   "dialogs__startReview__enableMeaningExercises": "Ativar exercicios de significado",
   "dialogs__startReview__ok": "Começar",
   "dialogs__startReview__cancel": "Voltar"
