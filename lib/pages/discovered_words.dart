@@ -35,10 +35,12 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
     });
     Future.delayed(const Duration(milliseconds: 200), () {
       final snackbarController = ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              duration: const Duration(days: 365),
-              content: Text(
-                  AppLocalizations.of(context)!.snackbars__downloadingDict)));
+        SnackBar(
+          duration: const Duration(days: 365),
+          content:
+              Text(AppLocalizations.of(context)!.snackbars__downloadingDict),
+        ),
+      );
       dictionary.download().whenComplete(() {
         snackbarController.close();
         setState(() => dictionaryIsLoaded = true);
@@ -213,7 +215,6 @@ class DiscoveredWordItem extends StatelessWidget {
                     leading: const Icon(Icons.delete),
                     title: Text(t.pages__discoveredWords__contextMenu__delete)),
               ),
-              // Add more menu items as needed
             ];
           },
         ),
@@ -232,14 +233,13 @@ class DiscoveredWordItem extends StatelessWidget {
           content: Text(t.snackbars__discoveredWord__deleted(
               this.wordStringOfDiscoveredWord)),
           action: SnackBarAction(
-              label: "Undo",
-              onPressed: () {
-                word.id = 0;
-                discoveredWordsBox.put(word);
-              }),
+            label: "Undo",
+            onPressed: () {
+              word.id = 0;
+              discoveredWordsBox.put(word);
+            },
+          ),
         ));
-        break;
-      case "show_stats":
         break;
       default:
         throw UnimplementedError("$choice is not implemented yet");
@@ -285,17 +285,18 @@ class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
                 onChanged: (value) => this.keyword = value,
                 onEditingComplete: _search,
                 decoration: InputDecoration(
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    hintText: "言葉を入力してください",
-                    border: const OutlineInputBorder(),
-                    labelText: "Search",
-                    prefixIcon: IconButton(
-                      icon: const Icon(Icons.search),
-                      hoverColor: Colors.transparent,
-                      mouseCursor: SystemMouseCursors.basic,
-                      onPressed: _search,
-                    )),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  hintText: "言葉を入力してください",
+                  border: const OutlineInputBorder(),
+                  labelText: "Search",
+                  prefixIcon: IconButton(
+                    icon: const Icon(Icons.search),
+                    hoverColor: Colors.transparent,
+                    mouseCursor: SystemMouseCursors.basic,
+                    onPressed: _search,
+                  ),
+                ),
               ),
             ),
           ] +
@@ -306,13 +307,15 @@ class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
                     onAdd: !widget.discoveredWordsBox.contains(result.id)
                         ? (entry) {
                             widget.discoveredWordsBox.put(
-                                DiscoveredWord(
-                                    entryNumber: entry.id,
-                                    successMeaningReviews: 0,
-                                    failedMeaningReviews: 0,
-                                    successReadingReviews: 0,
-                                    failedReadingReviews: 0),
-                                mode: PutMode.insert);
+                              DiscoveredWord(
+                                entryNumber: entry.id,
+                                successMeaningReviews: 0,
+                                failedMeaningReviews: 0,
+                                successReadingReviews: 0,
+                                failedReadingReviews: 0,
+                              ),
+                              mode: PutMode.insert,
+                            );
                             Navigator.of(context).pop();
                           }
                         : null,
@@ -337,7 +340,8 @@ class WordSearchResultListTile extends StatelessWidget {
             ? IconButton(
                 icon: const Icon(Icons.add),
                 onPressed: () => onAdd!(entry),
-                color: Colors.blue)
+                color: Colors.blue,
+              )
             : null,
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
