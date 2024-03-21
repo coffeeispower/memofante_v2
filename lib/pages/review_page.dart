@@ -59,11 +59,13 @@ class _ReviewPageState extends State<ReviewPage> {
               onChanged: ((value) {
                 stringInputController.text = kanaKit.toKana(value);
               }),
+              onSubmitted: (_) => setState(_checkAnswer),
             ),
           if (currentExercise.answerType == AnswerType.englishString)
             TextField(
               enabled: state == ExerciseState.pending,
               controller: stringInputController,
+              onSubmitted: (_) => setState(_checkAnswer),
             ),
           ButtonBar(
             children: [
