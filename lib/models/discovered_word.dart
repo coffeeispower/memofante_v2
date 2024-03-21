@@ -1,5 +1,4 @@
 import 'package:memofante/objectbox.g.dart';
-import 'package:objectbox/objectbox.dart';
 
 @Entity()
 class DiscoveredWord {
@@ -17,12 +16,15 @@ class DiscoveredWord {
   int get successReviews => successReadingReviews + successMeaningReviews;
 
   double get successReadingRate =>
-      (successReadingReviews as double) / (totalReadingReviews as double);
+      (successReadingReviews.toDouble()) / (totalReadingReviews.toDouble());
   double get successMeaningRate =>
-      (successMeaningReviews as double) / (totalMeaningReviews as double);
-  double get successRate =>
-      (successReadingReviews as double) / (totalReadingReviews as double);
+      (successMeaningReviews.toDouble()) / (totalMeaningReviews.toDouble());
 
+  double get failedReadingRate =>
+      (failedReadingReviews.toDouble()) / (totalReadingReviews.toDouble());
+  double get failedMeaningRate =>
+      (failedMeaningReviews.toDouble()) / (totalMeaningReviews.toDouble());
+  
   int get totalReadingReviews => successReadingReviews + failedReadingReviews;
   int get totalMeaningReviews => successMeaningReviews + failedMeaningReviews;
   int get totalReviews => totalReadingReviews + totalMeaningReviews;

@@ -1,9 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:kana_kit/kana_kit.dart';
-import 'package:memofante/dict.dart';
 import 'package:memofante/main.dart';
 import 'package:memofante/models/discovered_word.dart';
 import 'package:memofante/models/exercises.dart';
@@ -32,12 +28,23 @@ class _ReviewPageState extends State<ReviewPage> {
   @override
   void initState() {
     super.initState();
-    _nextExercise();
+    _goToNextExercise();
   }
 
-  void _nextExercise() {
+  void _goToNextExercise() {
     state = ExerciseState.pending;
-    currentExercise = _randomExercise();
+    bottomSheetController?.close();
+    stringInputController.clear();
+    final nextExercise = getNextExercise(widget.discoveredWordBox, widget.enableReadingExercises, widget.enableMeaningExercises);
+    if (nextExercise != null) {
+      currentExercise = nextExercise;
+    } else {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(AppLocalizations.of(context)!.no_discovered_words)
+      ));
+    }
   }
 
   @override
@@ -56,9 +63,7 @@ class _ReviewPageState extends State<ReviewPage> {
             TextField(
               enabled: state == ExerciseState.pending,
               controller: stringInputController,
-              onChanged: ((value) {
-                stringInputController.text = kanaKit.toKana(value);
-              }),
+              onEditingComplete: () => stringInputController.text = kanaKit.toKana(stringInputController.text),
               onSubmitted: (_) => setState(_checkAnswer),
             ),
           if (currentExercise.answerType == AnswerType.englishString)
@@ -78,7 +83,7 @@ class _ReviewPageState extends State<ReviewPage> {
                   size: 16,
                   color: Colors.redAccent,
                 ),
-                label: const Text("Stop Review"),
+                label: Text(t.stop_review),
               ),
               if (state == ExerciseState.pending)
                 ElevatedButton.icon(
@@ -92,13 +97,13 @@ class _ReviewPageState extends State<ReviewPage> {
                 )
               else
                 ElevatedButton.icon(
-                  onPressed: () => setState(_nextExercise),
+                  onPressed: () => setState(_goToNextExercise),
                   icon: const Icon(
                     Icons.arrow_forward,
                     size: 16,
                     color: Colors.blueAccent,
                   ),
-                  label: const Text("Next"),
+                  label: Text(t.next),
                 )
             ],
           )
@@ -130,13 +135,15 @@ class _ReviewPageState extends State<ReviewPage> {
           builder: (context) => const CorrectAnswerModal(),
           enableDrag: false,
         );
+        currentExercise.incrementSuccessCount();
         break;
       case ExerciseState.fail:
         bottomSheetController = showBottomSheet(
           context: context,
-          builder: (context) => const WrongAnswerModal(),
+          builder: (context) => WrongAnswerModal(correctAnswer: currentExercise.correctAnswer),
           enableDrag: false,
         );
+        currentExercise.incrementFailCount();
         break;
     }
   }
@@ -145,17 +152,6 @@ class _ReviewPageState extends State<ReviewPage> {
   void dispose() {
     super.dispose();
     stringInputController.dispose();
-  }
-
-  Exercise _randomExercise() {
-    bottomSheetController?.close();
-    stringInputController.clear();
-    return ReadingExercise(
-        entry: dictionary.searchEntryFromId(widget.discoveredWordBox
-            .query()
-            .build()
-            .findFirst()!
-            .entryNumber)!);
   }
 }
 
@@ -166,6 +162,8 @@ class CorrectAnswerModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Container(
       constraints: const BoxConstraints(minWidth: 100),
       padding: const EdgeInsets.all(16),
@@ -196,12 +194,12 @@ class CorrectAnswerModal extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'That is the correct answer!',
+                  loc.success_review_headline,
                   style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                         color: Colors.green,
                       ),
                 ),
-                const Text('Press "Next" to go to the next exercise')
+                Text(loc.success_review_message)
               ],
             ),
           )
@@ -212,12 +210,15 @@ class CorrectAnswerModal extends StatelessWidget {
 }
 
 class WrongAnswerModal extends StatelessWidget {
+  final String correctAnswer;
   const WrongAnswerModal({
     super.key,
+    required this.correctAnswer
   });
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Container(
       constraints: const BoxConstraints(minWidth: 100),
       padding: const EdgeInsets.all(16),
@@ -248,13 +249,15 @@ class WrongAnswerModal extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Wrong!',
+                  loc.fail_review_headline,
                   style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                         color: Colors.red,
                       ),
                 ),
-                const Text(
-                    'You\'ll do better the next time!\nPress "Next" to go to the next exercise.')
+                Text(loc.fail_review_message),
+                Text(correctAnswer, style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  fontWeight: FontWeight.bold
+                ),)
               ],
             ),
           )

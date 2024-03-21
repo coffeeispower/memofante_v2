@@ -8,9 +8,18 @@
   "snackbars__downloadingDict": "A baixar o dicionário... Os resultados de busca podem estar incompletos ou quebrados durante este processo.",
   
   "dialogs__startReview__title": "Começar review",
-  "dialogs__startReview_description": "Clica em \"Começar\" para começar um novo review ou \"Voltar\" se não estiveres pronto.",
+  "dialogs__startReview__description": "Clica em \"Começar\" para começar um novo review ou \"Voltar\" se não estiveres pronto.",
   "dialogs__startReview__enableReadingExercises": "Ativar exercicios de leitura",
   "dialogs__startReview__enableMeaningExercises": "Ativar exercicios de significado",
   "dialogs__startReview__ok": "Começar",
-  "dialogs__startReview__cancel": "Voltar"
+  "dialogs__startReview__cancel": "Voltar",
+  "readingExercise__question": "Escreve {word} em hiragana",
+  "no_discovered_words": "Nenhuma palavra descoberta pra rever, tenta adicionar algumas palavras primeiro",
+  "fail_review_message": "Não te preocupes, vais melhorar!\nRespostas corretas:",
+  "fail_review_headline": "ERROUUU!",
+  "next": "Próximo",
+  "stop_review": "Parar Review",
+  "success_review_headline": "Acertou o miseravi",
+  "success_review_message": "Continua assim! Aperta no botão \"Próximo\""
+
 }
