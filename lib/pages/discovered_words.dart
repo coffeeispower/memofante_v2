@@ -190,7 +190,7 @@ class DiscoveredWordItem extends StatelessWidget {
   final Box<DiscoveredWord> discoveredWordsBox;
   DictEntry get entry => dictionary.searchEntryFromId(word.entryNumber)!;
   String get wordStringOfDiscoveredWord =>
-      entry.word.isNotEmpty ? entry.word.first : entry.readings.first;
+      entry.word.isEmpty || entry.onlyKana ? entry.readings.first : entry.word.first;
   @override
   Widget build(BuildContext context) {
     return ListTile(
