@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:memofante/main.dart';
 import 'package:memofante/models/discovered_word.dart';
@@ -21,7 +22,7 @@ class ReviewPage extends StatefulWidget {
 }
 
 class _ReviewPageState extends State<ReviewPage> {
-  late Exercise currentExercise;
+  Exercise? currentExercise;
   ExerciseState state = ExerciseState.pending;
   TextEditingController stringInputController = TextEditingController();
   PersistentBottomSheetController? bottomSheetController;
@@ -37,18 +38,23 @@ class _ReviewPageState extends State<ReviewPage> {
     stringInputController.clear();
     final nextExercise = getNextExercise(widget.discoveredWordBox,
         widget.enableReadingExercises, widget.enableMeaningExercises);
-    if (nextExercise != null) {
-      currentExercise = nextExercise;
-    } else {
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: Colors.red,
-          content: Text(AppLocalizations.of(context)!.no_discovered_words)));
+    currentExercise = nextExercise;
+
+    if (currentExercise == null) {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(AppLocalizations.of(context)!.no_discovered_words)));
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (currentExercise == null) {
+      return Container();
+    }
     final t = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.all(8.0 * 2),
@@ -56,8 +62,8 @@ class _ReviewPageState extends State<ReviewPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          currentExercise.question(context),
-          if (currentExercise.answerType == AnswerType.japaneseString)
+          currentExercise!.question(context),
+          if (currentExercise!.answerType == AnswerType.japaneseString)
             TextField(
               enabled: state == ExerciseState.pending,
               controller: stringInputController,
@@ -65,7 +71,7 @@ class _ReviewPageState extends State<ReviewPage> {
                   kanaKit.toKana(stringInputController.text),
               onSubmitted: (_) => setState(_checkAnswer),
             ),
-          if (currentExercise.answerType == AnswerType.englishString)
+          if (currentExercise!.answerType == AnswerType.englishString)
             TextField(
               enabled: state == ExerciseState.pending,
               controller: stringInputController,
@@ -113,17 +119,17 @@ class _ReviewPageState extends State<ReviewPage> {
 
   /// Checks the answer and updates the exercise state and the statistics of the word
   void _checkAnswer() {
-    switch (currentExercise.answerType) {
+    switch (currentExercise!.answerType) {
       case AnswerType.japaneseString:
         stringInputController.text = kanaKit.toKana(stringInputController.text);
-        if (currentExercise.checkAnswer(stringInputController.text)) {
+        if (currentExercise!.checkAnswer(stringInputController.text)) {
           state = ExerciseState.success;
         } else {
           state = ExerciseState.fail;
         }
         break;
       case AnswerType.englishString:
-        if (currentExercise.checkAnswer(stringInputController.text)) {
+        if (currentExercise!.checkAnswer(stringInputController.text)) {
           state = ExerciseState.success;
         } else {
           state = ExerciseState.fail;
@@ -141,15 +147,15 @@ class _ReviewPageState extends State<ReviewPage> {
           builder: (context) => const CorrectAnswerModal(),
           enableDrag: false,
         );
-        currentExercise.incrementSuccessCount();
+        currentExercise!.incrementSuccessCount();
         break;
       case ExerciseState.fail:
         bottomSheetController = showBottomSheet(
           context: context,
-          builder: (context) => WrongAnswerModal(exercise: currentExercise),
+          builder: (context) => WrongAnswerModal(exercise: currentExercise!),
           enableDrag: false,
         );
-        currentExercise.incrementFailCount();
+        currentExercise!.incrementFailCount();
         break;
     }
   }
