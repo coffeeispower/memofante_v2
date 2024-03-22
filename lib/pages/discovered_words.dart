@@ -265,6 +265,7 @@ class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return ListView(
       controller: ModalScrollController.of(context),
       children: <Widget>[
@@ -287,9 +288,8 @@ class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
                 decoration: InputDecoration(
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  hintText: "言葉を入力してください",
                   border: const OutlineInputBorder(),
-                  labelText: "Search",
+                  labelText: t.searchWordsLabel,
                   prefixIcon: IconButton(
                     icon: const Icon(Icons.search),
                     hoverColor: Colors.transparent,

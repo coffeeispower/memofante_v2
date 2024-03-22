@@ -22,14 +22,8 @@
   "dialogs__startReview__ok": "Start",
   "dialogs__startReview__cancel": "Cancel",
 
-  "readingExercise__question": "Write {word} in hiragana",
-  "@readingExercise__question": {
-    "placeholders": {
-      "word":{
-        "type": "String"
-      }
-    }
-  },
+  "readingExercise__question": "Write in ひらがな",
+  "meaningExercise__question": "Write the meaning",
   "no_discovered_words": "No discovered words to review, try adding some words first",
   "fail_review_message": "You'll do better the next time!",
   "fail_review_headline": "Wrong",
@@ -38,5 +32,7 @@
   "stop_review": "Stop Review",
   "success_review_headline": "That's correct",
   "success_review_message": "Keep up the good work! Press \"Next\" to continue",
-  "show_meanings": "Show meanings"
+  "show_meanings": "Show meanings",
+  "check": "Check",
+  "searchWordsLabel": "Search words in the dictionary"
 }

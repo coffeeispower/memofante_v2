@@ -54,6 +54,7 @@ class _ReviewPageState extends State<ReviewPage> {
       padding: const EdgeInsets.all(8.0 * 2),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           currentExercise.question(context),
           if (currentExercise.answerType == AnswerType.japaneseString)
@@ -91,7 +92,7 @@ class _ReviewPageState extends State<ReviewPage> {
                     size: 16,
                     color: Colors.green,
                   ),
-                  label: const Text("Check"),
+                  label: Text(t.check),
                 )
               else
                 ElevatedButton.icon(

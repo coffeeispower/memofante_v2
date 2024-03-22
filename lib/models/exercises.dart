@@ -5,6 +5,7 @@ import 'package:memofante/dict.dart';
 import 'package:memofante/objectbox.g.dart';
 import 'discovered_word.dart';
 import 'exercises/reading.dart';
+import 'exercises/text_meaning.dart';
 
 enum AnswerType {
   englishString,
@@ -15,7 +16,7 @@ enum AnswerType {
 abstract class Exercise {
   Widget question(BuildContext context);
   Widget correctAnswer(BuildContext context);
-  
+
   AnswerType get answerType;
   bool checkAnswer(Object answer);
 
@@ -31,8 +32,6 @@ abstract class Exercise {
   /// The higher the score the more likely to appear as the next exercise this exercise will be
   double calculateScore();
 }
-
-
 
 double calculateScoreGeneric(
     int totalReviews, double failureRate, DateTime? lastReviewed) {
@@ -65,9 +64,12 @@ Exercise? getNextExercise(Box<DiscoveredWord> discoveredWordsBox,
   List<Exercise> exercises = [];
   for (var word in discoveredWords) {
     final entry = dictionary.searchEntryFromId(word.entryNumber)!;
-    if (enableReadingExercises &&
-        entry.word.isNotEmpty) {
+    if (enableReadingExercises && entry.word.isNotEmpty) {
       exercises.add(ReadingExercise(
+          discoveredWord: word, discoveredWordsBox: discoveredWordsBox));
+    }
+    if (enableMeaningExercises && entry.meanings.isNotEmpty) {
+      exercises.add(TextMeaningExercise(
           discoveredWord: word, discoveredWordsBox: discoveredWordsBox));
     }
   }
