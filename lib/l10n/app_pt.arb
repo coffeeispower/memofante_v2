@@ -13,7 +13,7 @@
   "dialogs__startReview__enableMeaningExercises": "Ativar exercicios de significado",
   "dialogs__startReview__ok": "Começar",
   "dialogs__startReview__cancel": "Voltar",
-  "readingExercise__question": "Escreve {word} em hiragana",
+  "readingExercise__question": "Escreve em ひらがな",
   "no_discovered_words": "Nenhuma palavra descoberta pra rever, tenta adicionar algumas palavras primeiro",
   "fail_review_message": "Não te preocupes, vais melhorar!",
   "correct_answers": "Respostas corretas:",
@@ -22,5 +22,9 @@
   "stop_review": "Parar Review",
   "success_review_headline": "Acertou o miseravi",
   "success_review_message": "Continua assim! Aperta no botão \"Próximo\"",
-  "show_meanings": "Mostrar significados"
+  "show_meanings": "Mostrar significados",
+  "meaningExercise__question": "Escreve o significado",
+  "check": "Verificar",
+  "searchWordsLabel": "Procurar palavras no dicionário"
+
 }

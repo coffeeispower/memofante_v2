@@ -38,7 +38,7 @@ class ReadingExercise implements Exercise {
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge!
-                          .copyWith(fontWeight: FontWeight.w900),
+                          .copyWith(fontWeight: FontWeight.w600),
                     ),
                   ))
               .toList(),
@@ -61,8 +61,20 @@ class ReadingExercise implements Exercise {
   @override
   Widget question(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-    return Text(t.readingExercise__question(entry.word.first),
-        style: Theme.of(context).textTheme.headlineMedium);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          t.readingExercise__question,
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        Text(
+          entry.word.first,
+          style: Theme.of(context).textTheme.bodyLarge,
+        )
+      ],
+    );
   }
 
   @override
