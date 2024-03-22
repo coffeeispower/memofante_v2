@@ -31,8 +31,9 @@
     }
   },
   "no_discovered_words": "No discovered words to review, try adding some words first",
-  "fail_review_message": "You'll do better the next time!\nCorrect Answers:",
+  "fail_review_message": "You'll do better the next time!",
   "fail_review_headline": "Wrong",
+  "correct_answers": "Correct Answers:",
   "next": "Next",
   "stop_review": "Stop Review",
   "success_review_headline": "That's correct",

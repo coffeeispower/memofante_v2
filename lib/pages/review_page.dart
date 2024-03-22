@@ -55,10 +55,7 @@ class _ReviewPageState extends State<ReviewPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            currentExercise.question(t),
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
+          currentExercise.question(context),
           if (currentExercise.answerType == AnswerType.japaneseString)
             TextField(
               enabled: state == ExerciseState.pending,
@@ -264,28 +261,13 @@ class WrongAnswerModal extends StatelessWidget {
                               ),
                     ),
                     Text(loc.fail_review_message),
-                    Text(
-                      exercise.correctAnswer,
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelLarge!
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
           const SizedBox(height: 8),
-          if (exercise.meanings != null)
-            ExpansionTile(
-              title: Text(loc.show_meanings),
-              children: exercise.meanings!.indexed
-                  .map((e) => ListTile(
-                        title: Text('${e.$1 + 1}. ${e.$2.join(", ")}'),
-                      ))
-                  .toList(),
-            )
+          exercise.correctAnswer(context),
         ],
       ),
     );

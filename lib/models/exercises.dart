@@ -1,9 +1,10 @@
 import 'dart:math';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
 import 'package:memofante/dict.dart';
-import 'package:memofante/models/discovered_word.dart';
 import 'package:memofante/objectbox.g.dart';
+import 'discovered_word.dart';
+import 'exercises/reading.dart';
 
 enum AnswerType {
   englishString,
@@ -12,10 +13,10 @@ enum AnswerType {
 }
 
 abstract class Exercise {
-  String question(AppLocalizations t);
+  Widget question(BuildContext context);
+  Widget correctAnswer(BuildContext context);
+  
   AnswerType get answerType;
-  String get correctAnswer;
-  List<List<String>>? get meanings;
   bool checkAnswer(Object answer);
 
   /// Increments the success rate of this exercise in the database
@@ -31,53 +32,7 @@ abstract class Exercise {
   double calculateScore();
 }
 
-class ReadingExercise implements Exercise {
-  final DiscoveredWord discoveredWord;
-  final Box<DiscoveredWord> discoveredWordsBox;
-  DictEntry get entry =>
-      dictionary.searchEntryFromId(discoveredWord.entryNumber)!;
-  const ReadingExercise(
-      {required this.discoveredWord, required this.discoveredWordsBox});
-  @override
-  bool checkAnswer(Object answerIn) {
-    assert(answerIn is String);
-    return entry.readings.contains(answerIn as String);
-  }
 
-  @override
-  AnswerType get answerType => AnswerType.japaneseString;
-  @override
-  String get correctAnswer => entry.readings.join(", ");
-  @override
-  List<List<String>>? get meanings => entry.meanings;
-  @override
-  String question(AppLocalizations t) {
-    return t.readingExercise__question(entry.word.first);
-  }
-
-  @override
-  void incrementFailCount() {
-    discoveredWord.failedReadingReviews++;
-    discoveredWord.lastReadingReview = DateTime.now();
-    discoveredWordsBox.put(discoveredWord);
-  }
-
-  @override
-  void incrementSuccessCount() {
-    discoveredWord.successReadingReviews++;
-    discoveredWord.lastReadingReview = DateTime.now();
-    discoveredWordsBox.put(discoveredWord);
-  }
-
-  @override
-  double calculateScore() {
-    return calculateScoreGeneric(
-      discoveredWord.totalReadingReviews,
-      discoveredWord.failedReadingRate,
-      discoveredWord.lastReadingReview,
-    );
-  }
-}
 
 double calculateScoreGeneric(
     int totalReviews, double failureRate, DateTime? lastReviewed) {
@@ -109,7 +64,9 @@ Exercise? getNextExercise(Box<DiscoveredWord> discoveredWordsBox,
   List<DiscoveredWord> discoveredWords = discoveredWordsBox.getAll();
   List<Exercise> exercises = [];
   for (var word in discoveredWords) {
-    if (enableReadingExercises) {
+    final entry = dictionary.searchEntryFromId(word.entryNumber)!;
+    if (enableReadingExercises &&
+        entry.word.isNotEmpty) {
       exercises.add(ReadingExercise(
           discoveredWord: word, discoveredWordsBox: discoveredWordsBox));
     }
