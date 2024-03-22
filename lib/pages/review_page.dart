@@ -116,8 +116,15 @@ class _ReviewPageState extends State<ReviewPage> {
   /// Checks the answer and updates the exercise state and the statistics of the word
   void _checkAnswer() {
     switch (currentExercise.answerType) {
-      case AnswerType.englishString:
       case AnswerType.japaneseString:
+        stringInputController.text = kanaKit.toKana(stringInputController.text);
+        if (currentExercise.checkAnswer(stringInputController.text)) {
+          state = ExerciseState.success;
+        } else {
+          state = ExerciseState.fail;
+        }
+        break;
+      case AnswerType.englishString:
         if (currentExercise.checkAnswer(stringInputController.text)) {
           state = ExerciseState.success;
         } else {
@@ -273,8 +280,7 @@ class WrongAnswerModal extends StatelessWidget {
           if (exercise.meanings != null)
             ExpansionTile(
               title: Text(loc.show_meanings),
-              children: exercise.meanings!
-                  .indexed
+              children: exercise.meanings!.indexed
                   .map((e) => ListTile(
                         title: Text('${e.$1 + 1}. ${e.$2.join(", ")}'),
                       ))
