@@ -36,6 +36,6 @@
   "next": "Next",
   "stop_review": "Stop Review",
   "success_review_headline": "That's correct",
-  "success_review_message": "Keep up the good work! Press \"Next\" to continue"
-
+  "success_review_message": "Keep up the good work! Press \"Next\" to continue",
+  "show_meanings": "Show meanings"
 }

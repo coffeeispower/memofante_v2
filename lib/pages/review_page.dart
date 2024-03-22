@@ -35,15 +35,15 @@ class _ReviewPageState extends State<ReviewPage> {
     state = ExerciseState.pending;
     bottomSheetController?.close();
     stringInputController.clear();
-    final nextExercise = getNextExercise(widget.discoveredWordBox, widget.enableReadingExercises, widget.enableMeaningExercises);
+    final nextExercise = getNextExercise(widget.discoveredWordBox,
+        widget.enableReadingExercises, widget.enableMeaningExercises);
     if (nextExercise != null) {
       currentExercise = nextExercise;
     } else {
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.red,
-        content: Text(AppLocalizations.of(context)!.no_discovered_words)
-      ));
+          backgroundColor: Colors.red,
+          content: Text(AppLocalizations.of(context)!.no_discovered_words)));
     }
   }
 
@@ -63,7 +63,8 @@ class _ReviewPageState extends State<ReviewPage> {
             TextField(
               enabled: state == ExerciseState.pending,
               controller: stringInputController,
-              onEditingComplete: () => stringInputController.text = kanaKit.toKana(stringInputController.text),
+              onEditingComplete: () => stringInputController.text =
+                  kanaKit.toKana(stringInputController.text),
               onSubmitted: (_) => setState(_checkAnswer),
             ),
           if (currentExercise.answerType == AnswerType.englishString)
@@ -140,7 +141,7 @@ class _ReviewPageState extends State<ReviewPage> {
       case ExerciseState.fail:
         bottomSheetController = showBottomSheet(
           context: context,
-          builder: (context) => WrongAnswerModal(correctAnswer: currentExercise.correctAnswer),
+          builder: (context) => WrongAnswerModal(exercise: currentExercise),
           enableDrag: false,
         );
         currentExercise.incrementFailCount();
@@ -210,11 +211,8 @@ class CorrectAnswerModal extends StatelessWidget {
 }
 
 class WrongAnswerModal extends StatelessWidget {
-  final String correctAnswer;
-  const WrongAnswerModal({
-    super.key,
-    required this.correctAnswer
-  });
+  final Exercise exercise;
+  const WrongAnswerModal({super.key, required this.exercise});
 
   @override
   Widget build(BuildContext context) {
@@ -222,45 +220,66 @@ class WrongAnswerModal extends StatelessWidget {
     return Container(
       constraints: const BoxConstraints(minWidth: 100),
       padding: const EdgeInsets.all(16),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Material(
-              elevation: 4,
-              borderRadius: BorderRadius.circular(100),
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: Material(
+                  elevation: 4,
                   borderRadius: BorderRadius.circular(100),
-                  color: Colors.red,
-                ),
-                child: const Icon(
-                  Icons.error_outline_outlined,
-                  color: Colors.white,
-                  size: 40,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: Colors.red,
+                    ),
+                    child: const Icon(
+                      Icons.error_outline_outlined,
+                      color: Colors.white,
+                      size: 40,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  loc.fail_review_headline,
-                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                        color: Colors.red,
-                      ),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      loc.fail_review_headline,
+                      style:
+                          Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                color: Colors.red,
+                              ),
+                    ),
+                    Text(loc.fail_review_message),
+                    Text(
+                      exercise.correctAnswer,
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
-                Text(loc.fail_review_message),
-                Text(correctAnswer, style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                  fontWeight: FontWeight.bold
-                ),)
-              ],
-            ),
-          )
+              )
+            ],
+          ),
+          const SizedBox(height: 8),
+          if (exercise.meanings != null)
+            ExpansionTile(
+              title: Text(loc.show_meanings),
+              children: exercise.meanings!
+                  .indexed
+                  .map((e) => ListTile(
+                        title: Text('${e.$1 + 1}. ${e.$2.join(", ")}'),
+                      ))
+                  .toList(),
+            )
         ],
       ),
     );
