@@ -1,16 +1,11 @@
-# memofante_v2
+# Memofante 2.0
 
-A new Flutter project.
+A application for helping you learn japanese words.
 
-## Getting Started
+This is a GUI/Flutter rewrite of the [rust version](https://github.com/coffeeispower/memofante). Now with a GUI, I plan to add many more features to memofante that are impossible in a TUI application but only time will tell how this will go.
 
-This project is a starting point for a Flutter application.
+## How does it work?
 
-A few resources to get you started if this is your first Flutter project:
+This is supposed to be used in conjunction with 10ten japanese reader browser extension, so you can hover over words in the browser to see the definition.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Memofante works with the concept of discovered words, when you find a new word on the internet that you had to use 10ten japanese reader because you didn't know it, you can copy it to memofante and then review the words later using spaced repetition.
