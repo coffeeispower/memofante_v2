@@ -1,11 +1,11 @@
 {
-    "name": "memofante_v2",
+    "name": "Memofante",
     "short_name": "memofante_v2",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#221500",
+    "theme_color": "#FF6A00",
+    "description": " A application for helping you learn japanese words",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
