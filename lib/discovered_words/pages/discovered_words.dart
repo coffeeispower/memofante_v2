@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:memofante/dict.dart';
+import 'package:memofante/discovered_words/widgets/discovered_word_list.dart';
 import 'package:memofante/main.dart';
 import 'package:memofante/objectbox.g.dart';
-import 'package:memofante/discovered_words/widgets/discovered_word_item.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../review/pages/review_page.dart';
 import '../../models/discovered_word.dart';
-import 'package:memofante/home/widgets/world_search_result_list_tile.dart';
+import 'package:memofante/base/widgets/world_search_result_list_tile.dart';
 
 class DiscoveredWords extends StatefulWidget {
   const DiscoveredWords({super.key});
@@ -59,6 +59,7 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(t.pages__discoveredWords__title),
@@ -70,22 +71,21 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
               showDialog(
                 context: context,
                 builder: (context) => ReviewConfirmationDialog(
-                    discoveredWordsBox: discoveredWordsBox),
+                  discoveredWordsBox: discoveredWordsBox,
+                ),
               );
             },
           ),
         ],
       ),
-      body: dictionaryIsLoaded
-          ? ListView(
-              children: discoveredWordsList
-                  .map((e) => DiscoveredWordItem(
-                        discoveredWordsBox: discoveredWordsBox,
-                        word: e,
-                      ))
-                  .toList(),
-            )
-          : const Text("Loading dictionary..."),
+      body: Center(
+        child: dictionaryIsLoaded
+            ? DiscoveredWordList(
+                discoveredWordList: discoveredWordsList,
+                discoveredWordsBox: discoveredWordsBox,
+              )
+            : const Text("Loading dictionary..."),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showMaterialModalBottomSheet(
