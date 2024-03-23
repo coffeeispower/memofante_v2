@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:memofante/base/widgets/responsive_state.dart';
 import 'package:memofante/main.dart';
 import 'package:memofante/models/discovered_word.dart';
 import 'package:memofante/models/exercises.dart';
@@ -21,11 +22,12 @@ class ReviewPage extends StatefulWidget {
   State<ReviewPage> createState() => _ReviewPageState();
 }
 
-class _ReviewPageState extends State<ReviewPage> {
+class _ReviewPageState extends ResponsiveState<ReviewPage> {
   Exercise? currentExercise;
   ExerciseState state = ExerciseState.pending;
   TextEditingController stringInputController = TextEditingController();
   PersistentBottomSheetController? bottomSheetController;
+
   @override
   void initState() {
     super.initState();
@@ -78,6 +80,7 @@ class _ReviewPageState extends State<ReviewPage> {
               onSubmitted: (_) => setState(_checkAnswer),
             ),
           ButtonBar(
+            alignment: MainAxisAlignment.center,
             children: [
               ElevatedButton.icon(
                 onPressed: () {
