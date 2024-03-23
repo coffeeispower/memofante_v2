@@ -1,0 +1,30 @@
+{
+  "@@locale": "pt_BR",
+  "pages__discoveredWords__title": "Palavras descobertas",
+  "pages__discoveredWords__add": "Adicionar palavra",
+  "pages__discoveredWords__contextMenu__stats": "Estatísticas",
+  "pages__discoveredWords__contextMenu__delete": "Deletar",
+  "snackbars__discoveredWord__deleted": "A palavra {discoveredWord} foi removida da sua lista de palavras descobertas.",
+  "snackbars__downloadingDict": "O dicionário está sendo baixado... Os resultados de busca podem estar incompletos ou quebrados durante esse processo.",
+  
+  "dialogs__startReview__title": "Começar review",
+  "dialogs__startReview__description": "Clique em \"Começar\" para começar um novo review ou \"Voltar\" se não estiver pronto.",
+  "dialogs__startReview__enableReadingExercises": "Ativar exercicios de leitura",
+  "dialogs__startReview__enableMeaningExercises": "Ativar exercicios de significado",
+  "dialogs__startReview__ok": "Começar",
+  "dialogs__startReview__cancel": "Voltar",
+  "readingExercise__question": "Escreva em ひらがな",
+  "no_discovered_words": "Nenhuma palavra descoberta pra rever, adicione novas palavras primeiro",
+  "fail_review_message": "Tenha paciência! Um tijolo de cada vez...",
+  "correct_answers": "Respostas corretas:",
+  "fail_review_headline": "ERROUUU!",
+  "next": "Próximo",
+  "stop_review": "Parar Review",
+  "success_review_headline": "Acertou o miseravi",
+  "success_review_message": "Continue assim! Aperte o botão \"Próximo\"",
+  "show_meanings": "Mostrar significados",
+  "meaningExercise__question": "Escreva o significado",
+  "check": "Verificar",
+  "searchWordsLabel": "Busque por palavras no dicionário"
+
+}
