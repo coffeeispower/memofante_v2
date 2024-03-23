@@ -23,17 +23,19 @@ class _DiscoveredWordListState extends ResponsiveState<DiscoveredWordList> {
     return Center(
       child: Align(
         alignment: Alignment.topCenter,
-        child: Wrap(
-          spacing: 1,
-          verticalDirection: VerticalDirection.down,
-          children: widget.discoveredWordList
-              .map(
-                (e) => DiscoveredWordItem(
-                  discoveredWordsBox: widget.discoveredWordsBox,
-                  word: e,
-                ),
-              )
-              .toList(),
+        child: SingleChildScrollView(
+          child: Wrap(
+            spacing: 1,
+            verticalDirection: VerticalDirection.down,
+            children: widget.discoveredWordList
+                .map(
+                  (e) => DiscoveredWordItem(
+                    discoveredWordsBox: widget.discoveredWordsBox,
+                    word: e,
+                  ),
+                )
+                .toList(),
+          ),
         ),
       ),
     );
