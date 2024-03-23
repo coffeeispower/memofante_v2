@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:memofante/dict.dart';
 import 'package:memofante/main.dart';
 import 'package:memofante/objectbox.g.dart';
+import 'package:memofante/discovered_words/widgets/discovered_word_item.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import './review_page.dart';
-import '../models/discovered_word.dart';
+import '../../review/pages/review_page.dart';
+import '../../models/discovered_word.dart';
+import 'package:memofante/home/widgets/world_search_result_list_tile.dart';
 
 class DiscoveredWords extends StatefulWidget {
   const DiscoveredWords({super.key});
@@ -183,70 +185,6 @@ class _ReviewConfirmationDialogState extends State<ReviewConfirmationDialog> {
   }
 }
 
-class DiscoveredWordItem extends StatelessWidget {
-  const DiscoveredWordItem(
-      {super.key, required this.discoveredWordsBox, required this.word});
-  final DiscoveredWord word;
-  final Box<DiscoveredWord> discoveredWordsBox;
-  DictEntry get entry => dictionary.searchEntryFromId(word.entryNumber)!;
-  String get wordStringOfDiscoveredWord =>
-      entry.word.isEmpty || entry.onlyKana ? entry.readings.first : entry.word.first;
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-        trailing: PopupMenuButton<String>(
-          onSelected: (String choice) {
-            _handleMenuAction(choice, context);
-          },
-          itemBuilder: (BuildContext context) {
-            final t = AppLocalizations.of(context)!;
-            return [
-              PopupMenuItem<String>(
-                value: "show_stats",
-                mouseCursor: SystemMouseCursors.click,
-                child: ListTile(
-                    leading: const Icon(Icons.bar_chart),
-                    title: Text(t.pages__discoveredWords__contextMenu__stats)),
-              ),
-              PopupMenuItem<String>(
-                value: "delete",
-                mouseCursor: SystemMouseCursors.click,
-                child: ListTile(
-                    leading: const Icon(Icons.delete),
-                    title: Text(t.pages__discoveredWords__contextMenu__delete)),
-              ),
-            ];
-          },
-        ),
-        title: Text(this.wordStringOfDiscoveredWord));
-  }
-
-  void _handleMenuAction(String choice, BuildContext context) {
-    final t = AppLocalizations.of(context)!;
-    switch (choice) {
-      case "delete":
-        discoveredWordsBox
-            .query(DiscoveredWord_.entryNumber.equals(word.entryNumber))
-            .build()
-            .remove();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(t.snackbars__discoveredWord__deleted(
-              this.wordStringOfDiscoveredWord)),
-          action: SnackBarAction(
-            label: "Undo",
-            onPressed: () {
-              word.id = 0;
-              discoveredWordsBox.put(word);
-            },
-          ),
-        ));
-        break;
-      default:
-        throw UnimplementedError("$choice is not implemented yet");
-    }
-  }
-}
-
 class AddDiscoveredWordModal extends StatefulWidget {
   const AddDiscoveredWordModal({super.key, required this.discoveredWordsBox});
   final Box<DiscoveredWord> discoveredWordsBox;
@@ -321,34 +259,6 @@ class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
                         : null,
                   ))
               .toList(),
-    );
-  }
-}
-
-class WordSearchResultListTile extends StatelessWidget {
-  final DictEntry entry;
-  final void Function(DictEntry entry)? onAdd;
-  const WordSearchResultListTile({super.key, required this.entry, this.onAdd});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(
-            "${entry.word.join(", ")} (${entry.readings.reversed.join(", ")})"),
-        trailing: onAdd != null
-            ? IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () => onAdd!(entry),
-                color: Colors.blue,
-              )
-            : null,
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children:
-              entry.meanings.map((e) => Text(" - ${e.join(", ")}")).toList(),
-        ),
-      ),
     );
   }
 }

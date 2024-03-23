@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'discovered_words.dart';
+import 'package:memofante/discovered_words/pages/discovered_words.dart';
 
 class RootWidget extends StatelessWidget {
   const RootWidget({super.key});
