@@ -38,7 +38,7 @@ class ReadingExercise implements Exercise {
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge!
-                          .copyWith(fontWeight: FontWeight.w900),
+                          .copyWith(fontWeight: FontWeight.w600),
                     ),
                   ))
               .toList(),

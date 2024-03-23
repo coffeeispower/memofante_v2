@@ -43,7 +43,7 @@ class TextMeaningExercise implements Exercise {
       return input.replaceAll(regex, '');
     }
 
-    return entry.meanings.expand((m) => m).any((potentialCorrectAnswer) => removeTextInParentheses(potentialCorrectAnswer).trim().similarityTo(answerIn as String) > 0.8);
+    return entry.meanings.expand((m) => m).any((potentialCorrectAnswer) => removeTextInParentheses(potentialCorrectAnswer).trim().similarityTo(answerIn as String) >= 0.7);
   }
 
   @override
