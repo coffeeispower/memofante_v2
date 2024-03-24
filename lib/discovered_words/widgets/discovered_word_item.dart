@@ -4,6 +4,7 @@ import 'package:memofante/base/widgets/responsive_state.dart';
 import 'package:memofante/dict.dart';
 import 'package:memofante/objectbox.g.dart';
 import 'package:memofante/models/discovered_word.dart';
+import 'package:ruby_text/ruby_text.dart';
 
 class DiscoveredWordItem extends StatefulWidget {
   DiscoveredWordItem({
@@ -34,11 +35,14 @@ class _DiscoveredWordItemState extends ResponsiveState<DiscoveredWordItem> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Expanded(
-                child: Text(
-                  this.wordStringOfDiscoveredWord,
-                  style: const TextStyle(
-                    fontSize: 20,
-                  ),
+                child: RubyText(
+                  [
+                    RubyTextData(
+                      wordStringOfDiscoveredWord,
+                      ruby: entry.readings.last,
+                    )
+                  ],
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
               PopupMenuButton<String>(
