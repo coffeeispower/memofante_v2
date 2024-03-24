@@ -21,7 +21,6 @@ class TextMeaningExercise implements Exercise {
 
   DictEntry get entry =>
       dictionary.searchEntryFromId(discoveredWord.entryNumber)!;
-  
 
   @override
   double calculateScore() {
@@ -43,12 +42,15 @@ class TextMeaningExercise implements Exercise {
       return input.replaceAll(regex, '');
     }
 
-    return entry.meanings.expand((m) => m).any((potentialCorrectAnswer) => removeTextInParentheses(potentialCorrectAnswer).trim().similarityTo(answerIn as String) >= 0.7);
+    return entry.meanings.expand((m) => m).any((potentialCorrectAnswer) =>
+        removeTextInParentheses(potentialCorrectAnswer)
+            .trim()
+            .similarityTo(answerIn as String) >=
+        0.7);
   }
 
   @override
   void incrementFailCount() {
-    
     discoveredWord.failedMeaningReviews++;
     discoveredWord.lastReadingReview = DateTime.now();
     discoveredWordsBox.put(discoveredWord);
@@ -60,7 +62,7 @@ class TextMeaningExercise implements Exercise {
     discoveredWord.lastReadingReview = DateTime.now();
     discoveredWordsBox.put(discoveredWord);
   }
-  
+
   @override
   Widget correctAnswer(BuildContext context) {
     final t = AppLocalizations.of(context)!;
@@ -78,29 +80,28 @@ class TextMeaningExercise implements Exercise {
           .toList(),
     );
   }
-  
+
   @override
   Widget question(BuildContext context) {
-    
     final t = AppLocalizations.of(context)!;
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           t.meaningExercise__question,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         if (entry.word.isEmpty)
-        Text(
-          entry.readings.first,
-          style: Theme.of(context).textTheme.bodyLarge,
-        )
+          Text(
+            entry.readings.first,
+            style: Theme.of(context).textTheme.bodyLarge,
+          )
         else
-        RubyText(
-          [RubyTextData(entry.word.first, ruby: entry.readings.last)],
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
+          RubyText(
+            [RubyTextData(entry.word.first, ruby: entry.readings.last)],
+            style: const TextStyle(fontSize: 30),
+          ),
       ],
     );
   }

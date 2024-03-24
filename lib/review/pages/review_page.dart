@@ -64,17 +64,22 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          currentExercise!.question(context),
+          Center(child: currentExercise!.question(context)),
+          const SizedBox(height: 20),
           if (currentExercise!.answerType == AnswerType.japaneseString)
-            TextField(
-              enabled: state == ExerciseState.pending,
-              controller: stringInputController,
-              onEditingComplete: () => stringInputController.text =
-                  kanaKit.toKana(stringInputController.text),
-              onSubmitted: (_) => setState(_checkAnswer),
+            Center(
+              child: TextField(
+                enabled: state == ExerciseState.pending,
+                controller: stringInputController,
+                onEditingComplete: () => stringInputController.text =
+                    kanaKit.toKana(stringInputController.text),
+                onSubmitted: (_) => setState(_checkAnswer),
+                textAlign: TextAlign.center,
+              ),
             ),
           if (currentExercise!.answerType == AnswerType.englishString)
             TextField(
+              textAlign: TextAlign.center,
               enabled: state == ExerciseState.pending,
               controller: stringInputController,
               onSubmitted: (_) => setState(_checkAnswer),
