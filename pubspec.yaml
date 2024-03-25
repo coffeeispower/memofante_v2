@@ -52,6 +52,10 @@ dependencies:
   kana_kit: ^2.0.0
   ruby_text: ^3.0.3
   string_similarity: ^2.0.0
+  dart_discord_rpc:
+    git: 
+      url: https://github.com/coffeeispower/dart_discord_rpc.git
+      ref: master
 
 dev_dependencies:
   flutter_test:

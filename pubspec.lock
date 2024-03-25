@@ -193,6 +193,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.6"
+  dart_discord_rpc:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: master
+      resolved-ref: "83f470f9dd28ebad22d2383263bc1891b22c586c"
+      url: "https://github.com/coffeeispower/dart_discord_rpc.git"
+    source: git
+    version: "0.0.1"
   dart_style:
     dependency: transitive
     description:
