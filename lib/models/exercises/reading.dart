@@ -99,4 +99,6 @@ class ReadingExercise implements Exercise {
       discoveredWord.lastReadingReview,
     );
   }
+  @override
+  String get word => entry.word.first;
 }

@@ -34,5 +34,28 @@
   "success_review_message": "Keep up the good work! Press \"Next\" to continue",
   "show_meanings": "Show meanings",
   "check": "Check",
-  "searchWordsLabel": "Search words in the dictionary"
+  "searchWordsLabel": "Search words in the dictionary",
+
+
+  "discordPresenceStateDiscoveredWords": "Looking at the discovered words",
+  "discordPresenceStateReviewing": "Reviewing the discovered words",
+
+  "discordPresenceDetailsReviewing": "Trying to remember wtf is \"{word}\"",
+  "@discordPresenceDetailsReviewing": {
+    "placeholders":  {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+
+  "discordPresenceStateAddingWord": "Adding a new word",
+  "discordPresenceDetailsAddingWord": "Searching \"{word}\"",
+  "@discordPresenceDetailsAddingWord": {
+    "placeholders":  {
+      "word": {
+        "type": "String"
+      }
+    }
+  }
 }

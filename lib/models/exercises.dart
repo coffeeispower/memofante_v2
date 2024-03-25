@@ -31,6 +31,8 @@ abstract class Exercise {
   /// Calculates the score of this exercise
   /// The higher the score the more likely to appear as the next exercise this exercise will be
   double calculateScore();
+
+  String get word;
 }
 
 double calculateScoreGeneric(

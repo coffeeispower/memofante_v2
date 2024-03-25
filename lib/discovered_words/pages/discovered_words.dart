@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:dart_discord_rpc/dart_discord_rpc.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:memofante/dict.dart';
@@ -22,6 +24,14 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
   late List<DiscoveredWord> discoveredWordsList;
   late StreamSubscription<List<DiscoveredWord>> discoveredWordsSubscription;
   var dictionaryIsLoaded = false;
+  void richPresence(AppLocalizations t) {
+    discordRpc.updatePresence(DiscordPresence(
+      state: t.discordPresenceStateDiscoveredWords,
+      largeImageKey: "memofante-icon",
+      startTimeStamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+    ));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -35,12 +45,13 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
         discoveredWordsList = words;
       });
     });
-    Future.delayed(const Duration(milliseconds: 200), () {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      final t = AppLocalizations.of(context)!;
+      richPresence(t);
       final snackbarController = ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           duration: const Duration(days: 365),
-          content:
-              Text(AppLocalizations.of(context)!.snackbars__downloadingDict),
+          content: Text(t.snackbars__downloadingDict),
         ),
       );
       dictionary.download().whenComplete(() {
@@ -72,6 +83,7 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
                 context: context,
                 builder: (context) => ReviewConfirmationDialog(
                   discoveredWordsBox: discoveredWordsBox,
+                  onReviewEnd: () => richPresence(t)
                 ),
               );
             },
@@ -96,7 +108,7 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
                     top: Radius.circular(20), bottom: Radius.circular(0))),
             builder: (context) =>
                 AddDiscoveredWordModal(discoveredWordsBox: discoveredWordsBox),
-          );
+          ).then((value) => richPresence(t));
         },
         tooltip: t.pages__discoveredWords__add,
         child: const Icon(Icons.add),
@@ -109,9 +121,10 @@ class ReviewConfirmationDialog extends StatefulWidget {
   const ReviewConfirmationDialog({
     super.key,
     required this.discoveredWordsBox,
+    required this.onReviewEnd,
   });
   final Box<DiscoveredWord> discoveredWordsBox;
-
+  final Function() onReviewEnd;
   @override
   State<ReviewConfirmationDialog> createState() =>
       _ReviewConfirmationDialogState();
@@ -176,7 +189,7 @@ class _ReviewConfirmationDialogState extends State<ReviewConfirmationDialog> {
                       enableReadingExercises: enableReadingExercises,
                       enableMeaningExercises: enableMeaningExercises,
                     )),
-                  ));
+                  )).then((_) => widget.onReviewEnd());
                 },
           child: Text(t.dialogs__startReview__ok),
         )
@@ -195,9 +208,24 @@ class AddDiscoveredWordModal extends StatefulWidget {
 class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
   String keyword = "";
   List<DictEntry> results = [];
+  final startTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   void _search() {
     setState(() {
       this.results = dictionary.searchFromJPWord(this.keyword);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      final t = AppLocalizations.of(context)!;
+      discordRpc.updatePresence(DiscordPresence(
+        state: t.discordPresenceStateAddingWord,
+        smallImageKey: "adding-word",
+        largeImageKey: "memofante-icon",
+        startTimeStamp: startTime,
+      ));
     });
   }
 
@@ -221,7 +249,18 @@ class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               // Searh Box
               child: TextField(
-                onChanged: (value) => this.keyword = value,
+                onChanged: (value) {
+                  this.keyword = value;
+
+                  final t = AppLocalizations.of(context)!;
+                  discordRpc.updatePresence(DiscordPresence(
+                    state: t.discordPresenceStateAddingWord,
+                    details: keyword.isEmpty ? null : t.discordPresenceDetailsAddingWord(keyword),
+                    smallImageKey: "adding-word",
+                    largeImageKey: "memofante-icon",
+                    startTimeStamp: startTime,
+                  ));
+                },
                 onEditingComplete: _search,
                 decoration: InputDecoration(
                   contentPadding:

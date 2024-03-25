@@ -105,4 +105,7 @@ class TextMeaningExercise implements Exercise {
       ],
     );
   }
+  
+  @override
+  String get word => entry.word.first;
 }

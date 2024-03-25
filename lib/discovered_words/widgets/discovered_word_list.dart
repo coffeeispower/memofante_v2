@@ -5,7 +5,7 @@ import 'package:memofante/models/discovered_word.dart';
 import 'package:memofante/objectbox.g.dart';
 
 class DiscoveredWordList extends StatefulWidget {
-  DiscoveredWordList({
+  const DiscoveredWordList({
     super.key,
     required this.discoveredWordList,
     required this.discoveredWordsBox,

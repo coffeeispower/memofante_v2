@@ -1,3 +1,4 @@
+import 'package:dart_discord_rpc/dart_discord_rpc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -27,7 +28,7 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
   ExerciseState state = ExerciseState.pending;
   TextEditingController stringInputController = TextEditingController();
   PersistentBottomSheetController? bottomSheetController;
-
+  final startTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   @override
   void initState() {
     super.initState();
@@ -42,14 +43,24 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
         widget.enableReadingExercises, widget.enableMeaningExercises);
     currentExercise = nextExercise;
 
-    if (currentExercise == null) {
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      if (currentExercise == null) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: Colors.red,
             content: Text(AppLocalizations.of(context)!.no_discovered_words)));
-      });
-    }
+        return;
+      }
+
+      final t = AppLocalizations.of(context)!;
+      discordRpc.updatePresence(DiscordPresence(
+        state: t.discordPresenceStateReviewing,
+        details: t.discordPresenceDetailsReviewing(currentExercise!.word),
+        smallImageKey: "reviewing",
+        largeImageKey: "memofante-icon",
+        startTimeStamp: startTime,
+      ));
+    });
   }
 
   @override
@@ -146,23 +157,59 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
       case AnswerType.multipleChoice:
         throw UnimplementedError();
     }
+    final t = AppLocalizations.of(context)!;
     switch (state) {
       case ExerciseState.pending:
         throw UnimplementedError();
       case ExerciseState.success:
+        discordRpc.updatePresence(DiscordPresence(
+          state: t.success_review_headline,
+          details: t.discordPresenceDetailsReviewing(currentExercise!.word),
+          smallImageKey: "checkmark",
+          largeImageKey: "memofante-icon",
+          startTimeStamp: startTime,
+        ));
         bottomSheetController = showBottomSheet(
           context: context,
           builder: (context) => const CorrectAnswerModal(),
           enableDrag: false,
         );
+        bottomSheetController!.closed.then((_) {
+          final t = AppLocalizations.of(context)!;
+          discordRpc.updatePresence(DiscordPresence(
+            state: t.discordPresenceStateReviewing,
+            details: t.discordPresenceDetailsReviewing(currentExercise!.word),
+            smallImageKey: "reviewing",
+            largeImageKey: "memofante-icon",
+            startTimeStamp: startTime,
+          ));
+        });
         currentExercise!.incrementSuccessCount();
         break;
       case ExerciseState.fail:
+      discordRpc.updatePresence(DiscordPresence(
+          state: t.success_review_headline,
+          details: t.discordPresenceDetailsReviewing(currentExercise!.word),
+          smallImageKey: "checkmark",
+          largeImageKey: "memofante-icon",
+          startTimeStamp: startTime,
+        ));
         bottomSheetController = showBottomSheet(
           context: context,
           builder: (context) => WrongAnswerModal(exercise: currentExercise!),
           enableDrag: false,
         );
+
+        bottomSheetController!.closed.then((_) {
+          final t = AppLocalizations.of(context)!;
+          discordRpc.updatePresence(DiscordPresence(
+            state: t.fail_review_headline,
+            details: t.discordPresenceDetailsReviewing(currentExercise!.word),
+            smallImageKey: "x",
+            largeImageKey: "memofante-icon",
+            startTimeStamp: startTime,
+          ));
+        });
         currentExercise!.incrementFailCount();
         break;
     }

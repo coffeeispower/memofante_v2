@@ -25,6 +25,28 @@
   "show_meanings": "Mostrar significados",
   "meaningExercise__question": "Escreva o significado",
   "check": "Verificar",
-  "searchWordsLabel": "Busque por palavras no dicionário"
+  "searchWordsLabel": "Busque por palavras no dicionário",
+
+  "discordPresenceStateDiscoveredWords": "Olhando as palavras descobertas",
+  "discordPresenceStateReviewing": "Revendo as palavras descobertas",
+
+  "discordPresenceDetailsReviewing": "Revisando \"{word}\"",
+  "@discordPresenceDetailsReviewing": {
+    "placeholders":  {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+
+  "discordPresenceStateAddingWord": "Adicionando uma palavra",
+  "discordPresenceDetailsAddingWord": "Procurando \"{word}\"",
+  "@discordPresenceDetailsAddingWord": {
+    "placeholders":  {
+      "word": {
+        "type": "String"
+      }
+    }
+  }
 
 }
