@@ -59,6 +59,32 @@ enum ExerciseState { pending, success, fail }
 double sigmoid(double x) {
   return 1.0 / (1.0 + exp(-x));
 }
+T weightedRandom<T>(List<T> items, List<double> weights) {
+  if (items.length != weights.length) {
+    throw Exception('Items and weights must be of the same size');
+  }
+
+  if (items.isEmpty) {
+    throw Exception('Items must not be empty');
+  }
+
+  List<double> cumulativeWeights = [];
+  for (int i = 0; i < weights.length; i++) {
+    cumulativeWeights.add(weights[i] + (i == 0 ? 0 : cumulativeWeights[i - 1]));
+  }
+
+  final maxCumulativeWeight = cumulativeWeights[cumulativeWeights.length - 1];
+  final randomNumber = maxCumulativeWeight * Random().nextDouble();
+  T? result;
+
+  for (int itemIndex = 0; itemIndex < items.length; itemIndex++) {
+    if (cumulativeWeights[itemIndex] >= randomNumber) {
+      return result = items[itemIndex];
+    }
+  }
+  return result!;
+}
+
 
 Exercise? getNextExercise(Box<DiscoveredWord> discoveredWordsBox,
     bool enableReadingExercises, bool enableMeaningExercises) {
@@ -78,9 +104,6 @@ Exercise? getNextExercise(Box<DiscoveredWord> discoveredWordsBox,
   if (exercises.isEmpty) {
     return null;
   }
-  exercises
-      .sort((ex1, ex2) => ex2.calculateScore().compareTo(ex1.calculateScore()));
-  int randomIndex =
-      Random().nextInt(5 > exercises.length ? exercises.length : 5);
-  return exercises[randomIndex];
+
+  return weightedRandom(exercises, exercises.map((e) => e.calculateScore()).toList());
 }
