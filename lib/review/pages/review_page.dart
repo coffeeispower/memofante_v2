@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_discord_rpc/dart_discord_rpc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -53,7 +54,7 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
       }
 
       final t = AppLocalizations.of(context)!;
-      discordRpc.updatePresence(DiscordPresence(
+      discordRpc?.updatePresence(DiscordPresence(
         state: t.discordPresenceStateReviewing,
         details: t.discordPresenceDetailsReviewing(currentExercise!.word),
         smallImageKey: "reviewing",
@@ -162,13 +163,16 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
       case ExerciseState.pending:
         throw UnimplementedError();
       case ExerciseState.success:
-        discordRpc.updatePresence(DiscordPresence(
-          state: t.success_review_headline,
-          details: t.discordPresenceDetailsReviewing(currentExercise!.word),
-          smallImageKey: "checkmark",
-          largeImageKey: "memofante-icon",
-          startTimeStamp: startTime,
-        ));
+        audioPlayer.play(AssetSource("duolingo-correct.mp3"));
+        try {
+          discordRpc?.updatePresence(DiscordPresence(
+            state: t.success_review_headline,
+            details: t.discordPresenceDetailsReviewing(currentExercise!.word),
+            smallImageKey: "checkmark",
+            largeImageKey: "memofante-icon",
+            startTimeStamp: startTime,
+          ));
+        } catch (_) {}
         bottomSheetController = showBottomSheet(
           context: context,
           builder: (context) => const CorrectAnswerModal(),
@@ -176,24 +180,29 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
         );
         bottomSheetController!.closed.then((_) {
           final t = AppLocalizations.of(context)!;
-          discordRpc.updatePresence(DiscordPresence(
-            state: t.discordPresenceStateReviewing,
-            details: t.discordPresenceDetailsReviewing(currentExercise!.word),
-            smallImageKey: "reviewing",
-            largeImageKey: "memofante-icon",
-            startTimeStamp: startTime,
-          ));
+          try {
+            discordRpc?.updatePresence(DiscordPresence(
+              state: t.discordPresenceStateReviewing,
+              details: t.discordPresenceDetailsReviewing(currentExercise!.word),
+              smallImageKey: "reviewing",
+              largeImageKey: "memofante-icon",
+              startTimeStamp: startTime,
+            ));
+          } catch (_) {}
         });
         currentExercise!.incrementSuccessCount();
         break;
       case ExerciseState.fail:
-      discordRpc.updatePresence(DiscordPresence(
-          state: t.success_review_headline,
-          details: t.discordPresenceDetailsReviewing(currentExercise!.word),
-          smallImageKey: "checkmark",
-          largeImageKey: "memofante-icon",
-          startTimeStamp: startTime,
-        ));
+        audioPlayer.play(AssetSource("duolingo-wrong.mp3"));
+        try {
+          discordRpc?.updatePresence(DiscordPresence(
+            state: t.success_review_headline,
+            details: t.discordPresenceDetailsReviewing(currentExercise!.word),
+            smallImageKey: "checkmark",
+            largeImageKey: "memofante-icon",
+            startTimeStamp: startTime,
+          ));
+        } catch (_) {}
         bottomSheetController = showBottomSheet(
           context: context,
           builder: (context) => WrongAnswerModal(exercise: currentExercise!),
@@ -202,13 +211,15 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
 
         bottomSheetController!.closed.then((_) {
           final t = AppLocalizations.of(context)!;
-          discordRpc.updatePresence(DiscordPresence(
-            state: t.fail_review_headline,
-            details: t.discordPresenceDetailsReviewing(currentExercise!.word),
-            smallImageKey: "x",
-            largeImageKey: "memofante-icon",
-            startTimeStamp: startTime,
-          ));
+          try {
+            discordRpc?.updatePresence(DiscordPresence(
+              state: t.fail_review_headline,
+              details: t.discordPresenceDetailsReviewing(currentExercise!.word),
+              smallImageKey: "x",
+              largeImageKey: "memofante-icon",
+              startTimeStamp: startTime,
+            ));
+          } catch (_) {}
         });
         currentExercise!.incrementFailCount();
         break;

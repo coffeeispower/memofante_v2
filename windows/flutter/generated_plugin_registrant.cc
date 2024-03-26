@@ -6,10 +6,13 @@
 
 #include "generated_plugin_registrant.h"
 
+#include <audioplayers_windows/audioplayers_windows_plugin.h>
 #include <dart_discord_rpc/dart_discord_rpc_plugin.h>
 #include <objectbox_flutter_libs/objectbox_flutter_libs_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
+  AudioplayersWindowsPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("AudioplayersWindowsPlugin"));
   DartDiscordRpcPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("DartDiscordRpcPlugin"));
   ObjectboxFlutterLibsPluginRegisterWithRegistrar(

@@ -14,6 +14,7 @@ class DiscoveredWordList extends StatefulWidget {
   final List<DiscoveredWord> discoveredWordList;
   final Box<DiscoveredWord> discoveredWordsBox;
 
+  @override
   State<DiscoveredWordList> createState() => _DiscoveredWordListState();
 }
 

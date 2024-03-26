@@ -25,7 +25,7 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
   late StreamSubscription<List<DiscoveredWord>> discoveredWordsSubscription;
   var dictionaryIsLoaded = false;
   void richPresence(AppLocalizations t) {
-    discordRpc.updatePresence(DiscordPresence(
+    discordRpc?.updatePresence(DiscordPresence(
       state: t.discordPresenceStateDiscoveredWords,
       largeImageKey: "memofante-icon",
       startTimeStamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
@@ -220,7 +220,7 @@ class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       final t = AppLocalizations.of(context)!;
-      discordRpc.updatePresence(DiscordPresence(
+      discordRpc?.updatePresence(DiscordPresence(
         state: t.discordPresenceStateAddingWord,
         smallImageKey: "adding-word",
         largeImageKey: "memofante-icon",
@@ -253,7 +253,7 @@ class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
                   this.keyword = value;
 
                   final t = AppLocalizations.of(context)!;
-                  discordRpc.updatePresence(DiscordPresence(
+                  discordRpc?.updatePresence(DiscordPresence(
                     state: t.discordPresenceStateAddingWord,
                     details: keyword.isEmpty ? null : t.discordPresenceDetailsAddingWord(keyword),
                     smallImageKey: "adding-word",

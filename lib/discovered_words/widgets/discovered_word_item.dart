@@ -7,7 +7,7 @@ import 'package:memofante/models/discovered_word.dart';
 import 'package:ruby_text/ruby_text.dart';
 
 class DiscoveredWordItem extends StatefulWidget {
-  DiscoveredWordItem({
+  const DiscoveredWordItem({
     super.key,
     required this.discoveredWordsBox,
     required this.word,
@@ -15,6 +15,7 @@ class DiscoveredWordItem extends StatefulWidget {
   final DiscoveredWord word;
   final Box<DiscoveredWord> discoveredWordsBox;
 
+  @override
   State<DiscoveredWordItem> createState() => _DiscoveredWordItemState();
 }
 
