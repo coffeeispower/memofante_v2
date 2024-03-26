@@ -14,6 +14,10 @@ class RootWidget extends StatelessWidget {
         brightness: Brightness.dark,
         useMaterial3: true,
         colorSchemeSeed: primaryColor,
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color.fromARGB(255, 255, 182, 148),
+          foregroundColor: Colors.black
+        )
       ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
