@@ -1,7 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:dart_discord_rpc/dart_discord_rpc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_discord_rpc/flutter_discord_rpc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:memofante/base/widgets/responsive_state.dart';
 import 'package:memofante/main.dart';
@@ -54,13 +54,19 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
       }
 
       final t = AppLocalizations.of(context)!;
-      discordRpc?.updatePresence(DiscordPresence(
-        state: t.discordPresenceStateReviewing,
-        details: t.discordPresenceDetailsReviewing(currentExercise!.word),
-        smallImageKey: "reviewing",
-        largeImageKey: "memofante-icon",
-        startTimeStamp: startTime,
-      ));
+      FlutterDiscordRPC.instance.setActivity(
+        activity: RPCActivity(
+          state: t.discordPresenceStateReviewing,
+          details: t.discordPresenceDetailsReviewing(currentExercise!.word),
+          assets: const RPCAssets(
+            smallImage: "reviewing",
+            largeImage: "memofante-icon",
+          ),
+          timestamps: RPCTimestamps(
+            start: startTime,
+          ),
+        ),
+      );
     });
   }
 
@@ -70,69 +76,78 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
       return Container();
     }
     final t = AppLocalizations.of(context)!;
-    return Padding(
-      padding: const EdgeInsets.all(8.0 * 2),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(child: currentExercise!.question(context)),
-          const SizedBox(height: 20),
-          if (currentExercise!.answerType == AnswerType.japaneseString)
-            Center(
-              child: TextField(
-                enabled: state == ExerciseState.pending,
-                controller: stringInputController,
-                onEditingComplete: () => stringInputController.text =
-                    kanaKit.toKana(stringInputController.text),
-                onSubmitted: (_) => setState(_checkAnswer),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          if (currentExercise!.answerType == AnswerType.englishString)
-            TextField(
-              textAlign: TextAlign.center,
-              enabled: state == ExerciseState.pending,
-              controller: stringInputController,
-              onSubmitted: (_) => setState(_checkAnswer),
-            ),
-          ButtonBar(
-            alignment: MainAxisAlignment.center,
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0 * 2),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 8 * 70),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                },
-                icon: const Icon(
-                  Icons.stop_circle,
-                  size: 16,
-                  color: Colors.redAccent,
+              currentExercise!.question(context),
+              const SizedBox(height: 20),
+              if (currentExercise!.answerType == AnswerType.japaneseString)
+                TextField(
+                  enabled: state == ExerciseState.pending,
+                  controller: stringInputController,
+                  onEditingComplete: () => stringInputController.text =
+                      kanaKit.toKana(stringInputController.text),
+                  onSubmitted: (_) => setState(_checkAnswer),
+                  decoration:
+                      const InputDecoration(border: OutlineInputBorder()),
                 ),
-                label: Text(t.stop_review),
+              if (currentExercise!.answerType == AnswerType.englishString)
+                TextField(
+                  textAlign: TextAlign.center,
+                  enabled: state == ExerciseState.pending,
+                  controller: stringInputController,
+                  onSubmitted: (_) => setState(_checkAnswer),
+                  decoration:
+                      const InputDecoration(border: OutlineInputBorder()),
+                ),
+              const SizedBox(
+                height: 16.0,
               ),
-              if (state == ExerciseState.pending)
-                ElevatedButton.icon(
-                  onPressed: () => setState(_checkAnswer),
-                  icon: const Icon(
-                    Icons.check,
-                    size: 16,
-                    color: Colors.green,
+              OverflowBar(
+                alignment: MainAxisAlignment.start,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    },
+                    icon: const Icon(
+                      Icons.stop_circle,
+                      size: 16,
+                      color: Colors.redAccent,
+                    ),
+                    label: Text(t.stop_review),
                   ),
-                  label: Text(t.check),
-                )
-              else
-                ElevatedButton.icon(
-                  onPressed: () => setState(_goToNextExercise),
-                  icon: const Icon(
-                    Icons.arrow_forward,
-                    size: 16,
-                    color: Colors.blueAccent,
-                  ),
-                  label: Text(t.next),
-                )
+                  if (state == ExerciseState.pending)
+                    ElevatedButton.icon(
+                      onPressed: () => setState(_checkAnswer),
+                      icon: const Icon(
+                        Icons.check,
+                        size: 16,
+                        color: Colors.green,
+                      ),
+                      label: Text(t.check),
+                    )
+                  else
+                    ElevatedButton.icon(
+                      onPressed: () => setState(_goToNextExercise),
+                      icon: const Icon(
+                        Icons.arrow_forward,
+                        size: 16,
+                        color: Colors.blueAccent,
+                      ),
+                      label: Text(t.next),
+                    )
+                ],
+              )
             ],
-          )
-        ],
+          ),
+        ),
       ),
     );
   }
@@ -165,13 +180,19 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
       case ExerciseState.success:
         audioPlayer.play(AssetSource("duolingo-correct.mp3"));
         try {
-          discordRpc?.updatePresence(DiscordPresence(
-            state: t.success_review_headline,
-            details: t.discordPresenceDetailsReviewing(currentExercise!.word),
-            smallImageKey: "checkmark",
-            largeImageKey: "memofante-icon",
-            startTimeStamp: startTime,
-          ));
+          FlutterDiscordRPC.instance.setActivity(
+            activity: RPCActivity(
+              state: t.success_review_headline,
+              details: t.discordPresenceDetailsReviewing(currentExercise!.word),
+              assets: const RPCAssets(
+                smallImage: "checkmark",
+                largeImage: "memofante-icon",
+              ),
+              timestamps: RPCTimestamps(
+                start: startTime,
+              ),
+            ),
+          );
         } catch (_) {}
         bottomSheetController = showBottomSheet(
           context: context,
@@ -181,13 +202,20 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
         bottomSheetController!.closed.then((_) {
           final t = AppLocalizations.of(context)!;
           try {
-            discordRpc?.updatePresence(DiscordPresence(
-              state: t.discordPresenceStateReviewing,
-              details: t.discordPresenceDetailsReviewing(currentExercise!.word),
-              smallImageKey: "reviewing",
-              largeImageKey: "memofante-icon",
-              startTimeStamp: startTime,
-            ));
+            FlutterDiscordRPC.instance.setActivity(
+              activity: RPCActivity(
+                state: t.discordPresenceStateReviewing,
+                details:
+                    t.discordPresenceDetailsReviewing(currentExercise!.word),
+                assets: const RPCAssets(
+                  smallImage: "reviewing",
+                  largeImage: "memofante-icon",
+                ),
+                timestamps: RPCTimestamps(
+                  start: startTime,
+                ),
+              ),
+            );
           } catch (_) {}
         });
         currentExercise!.incrementSuccessCount();
@@ -195,13 +223,19 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
       case ExerciseState.fail:
         audioPlayer.play(AssetSource("duolingo-wrong.mp3"));
         try {
-          discordRpc?.updatePresence(DiscordPresence(
-            state: t.success_review_headline,
-            details: t.discordPresenceDetailsReviewing(currentExercise!.word),
-            smallImageKey: "checkmark",
-            largeImageKey: "memofante-icon",
-            startTimeStamp: startTime,
-          ));
+          FlutterDiscordRPC.instance.setActivity(
+            activity: RPCActivity(
+              state: t.success_review_headline,
+              details: t.discordPresenceDetailsReviewing(currentExercise!.word),
+              assets: const RPCAssets(
+                smallImage: "checkmark",
+                largeImage: "memofante-icon",
+              ),
+              timestamps: RPCTimestamps(
+                start: startTime,
+              ),
+            ),
+          );
         } catch (_) {}
         bottomSheetController = showBottomSheet(
           context: context,
@@ -212,13 +246,20 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
         bottomSheetController!.closed.then((_) {
           final t = AppLocalizations.of(context)!;
           try {
-            discordRpc?.updatePresence(DiscordPresence(
-              state: t.fail_review_headline,
-              details: t.discordPresenceDetailsReviewing(currentExercise!.word),
-              smallImageKey: "x",
-              largeImageKey: "memofante-icon",
-              startTimeStamp: startTime,
-            ));
+            FlutterDiscordRPC.instance.setActivity(
+              activity: RPCActivity(
+                state: t.fail_review_headline,
+                details:
+                    t.discordPresenceDetailsReviewing(currentExercise!.word),
+                assets: const RPCAssets(
+                  smallImage: "x",
+                  largeImage: "memofante-icon",
+                ),
+                timestamps: RPCTimestamps(
+                  start: startTime,
+                ),
+              ),
+            );
           } catch (_) {}
         });
         currentExercise!.incrementFailCount();

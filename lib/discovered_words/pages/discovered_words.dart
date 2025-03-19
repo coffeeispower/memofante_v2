@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:dart_discord_rpc/dart_discord_rpc.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_discord_rpc/flutter_discord_rpc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:memofante/dict.dart';
@@ -25,10 +25,14 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
   late StreamSubscription<List<DiscoveredWord>> discoveredWordsSubscription;
   var dictionaryIsLoaded = false;
   void richPresence(AppLocalizations t) {
-    discordRpc?.updatePresence(DiscordPresence(
+    FlutterDiscordRPC.instance.setActivity(activity: RPCActivity(
       state: t.discordPresenceStateDiscoveredWords,
-      largeImageKey: "memofante-icon",
-      startTimeStamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      assets: const RPCAssets(
+        largeImage: "memofante-icon",
+      ),
+      timestamps: RPCTimestamps(
+        start: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      ),
     ));
   }
 
@@ -220,11 +224,15 @@ class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       final t = AppLocalizations.of(context)!;
-      discordRpc?.updatePresence(DiscordPresence(
+      FlutterDiscordRPC.instance.setActivity(activity: RPCActivity(
         state: t.discordPresenceStateAddingWord,
-        smallImageKey: "adding-word",
-        largeImageKey: "memofante-icon",
-        startTimeStamp: startTime,
+        assets: const RPCAssets(
+          smallImage: "adding-word",
+          largeImage: "memofante-icon",
+        ),
+        timestamps: RPCTimestamps(
+          start: startTime,
+        ),
       ));
     });
   }
@@ -253,12 +261,16 @@ class _AddDiscoveredWordModalState extends State<AddDiscoveredWordModal> {
                   this.keyword = value;
 
                   final t = AppLocalizations.of(context)!;
-                  discordRpc?.updatePresence(DiscordPresence(
-                    state: t.discordPresenceStateAddingWord,
+                  FlutterDiscordRPC.instance.setActivity(activity: RPCActivity(
                     details: keyword.isEmpty ? null : t.discordPresenceDetailsAddingWord(keyword),
-                    smallImageKey: "adding-word",
-                    largeImageKey: "memofante-icon",
-                    startTimeStamp: startTime,
+                    state: t.discordPresenceStateAddingWord,
+                    assets: const RPCAssets(
+                      smallImage: "adding-word",
+                      largeImage: "memofante-icon",
+                    ),
+                    timestamps: RPCTimestamps(
+                      start: startTime,
+                    ),
                   ));
                 },
                 onEditingComplete: _search,

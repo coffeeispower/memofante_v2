@@ -1,4 +1,5 @@
 import 'package:memofante/objectbox.g.dart';
+import "package:objectbox/objectbox.dart";
 
 @Entity()
 class DiscoveredWord {

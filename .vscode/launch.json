@@ -7,19 +7,28 @@
         {
             "name": "memofante_v2",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "env": {
+                "LD_LIBRARY_PATH": "${workspaceFolder}/build/linux/x64/debug/bundle/lib"
+            }
         },
         {
             "name": "memofante_v2 (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "env": {
+                "LD_LIBRARY_PATH": "${workspaceFolder}/build/linux/x64/debug/bundle/lib"
+            }
         },
         {
             "name": "memofante_v2 (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "env": {
+                "LD_LIBRARY_PATH": "${workspaceFolder}/build/linux/x64/debug/bundle/lib"
+            }
         }
     ]
 }

@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:6752048034514049591",
-      "lastPropertyId": "6:540593637611515591",
+      "lastPropertyId": "8:294177082876744591",
       "name": "DiscoveredWord",
       "properties": [
         {
@@ -40,6 +40,16 @@
           "name": "id",
           "type": 6,
           "flags": 1
+        },
+        {
+          "id": "7:1913155719005591592",
+          "name": "lastReadingReview",
+          "type": 10
+        },
+        {
+          "id": "8:294177082876744591",
+          "name": "lastMeaningReview",
+          "type": 10
         }
       ],
       "relations": []

@@ -5,7 +5,6 @@
     url = "github:edolstra/flake-compat";
     flake = false;
   };
-
   outputs = { self, nixpkgs, flake-utils, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
@@ -14,63 +13,34 @@
           config.allowUnfree = true;
           config.android_sdk.accept_license = true;
         };
-        objectbox-c = with pkgs;
-          stdenv.mkDerivation rec {
-            pname = "objectbox-c";
-            version = "0.20.0";
-            src = fetchurl {
-              url = "https://github.com/objectbox/${pname}/releases/download/v${version}/objectbox-linux-x64.tar.gz";
-              sha256 = "sha256-GP1U3djSWZVrFTIq2aFoWGpmKW1ldk+fwb3RfrGsruo=";
-            };
-            nativeBuildInputs = [
-              autoPatchelfHook
-            ];
-
-            buildInputs = [
-              stdenv.cc.cc.lib
-            ];
-
-            sourceRoot = ".";
-
-            installPhase = ''
-              runHook preInstall
-              mkdir $out
-              mv $PWD/* $out
-              mkdir $out/lib/pkgconfig
-              cat >$out/lib/pkgconfig/objectbox.pc <<EOF
-                prefix=$out
-                includedir=$out/include
-                libdir=''${prefix}/lib
-                Name: libobjectbox
-                Description: Database Library
-                Version: ${version}
-                Libs: -L\''${libdir} -lobjectbox
-                Cflags: -I\''${includedir}
-              EOF
-              runHook postInstall
-            '';
-          };
       in {
         
         devShells.default =
           let android = pkgs.callPackage ./nix/android.nix { };
-          in pkgs.mkShell {
+          in pkgs.mkShell rec {
             buildInputs = with pkgs; [
-              # from pkgs
               flutter
+              android.androidsdk
               jdk17
-              dart
-              android.platform-tools
-              cmake
-              ninja
-              objectbox-c
-              xdg-user-dirs
+              gtk3
+              gtk3.dev
+              graphite2
+              graphite2.dev
+              pkg-config
               gst_all_1.gstreamer
-              gst_all_1.gst-plugins-base
-              gst_all_1.gst-libav
-              gst_all_1.gst-plugins-good
+              gst_all_1.gstreamermm
+              libsysprof-capture
+              pcre2
+              curlFull
+              curlFull.dev
+              cmake
+              mount
               libunwind
-              orc
+              gst_all_1.gst-plugins-base
+              gst_all_1.gst-plugins-good
+              gst_all_1.gst-libav
+              rustup
+              bun
             ];
 
             ANDROID_HOME = "${android.androidsdk}/libexec/android-sdk";

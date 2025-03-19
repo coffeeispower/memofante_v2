@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:dart_discord_rpc/dart_discord_rpc.dart';
+import 'package:flutter_discord_rpc/flutter_discord_rpc.dart';
 import 'package:flutter/material.dart' hide RootWidget;
 import 'package:kana_kit/kana_kit.dart';
 import 'package:memofante/models/store.dart';
@@ -9,16 +9,15 @@ import 'package:memofante/base/root_widget.dart';
 
 final kanaKit =
     KanaKit(config: KanaKitConfig.defaultConfig.copyWith(upcaseKatakana: true));
-DiscordRPC? discordRpc;
 late ObjectBox objectBox;
 final audioPlayer = AudioPlayer();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   objectBox = await ObjectBox.create();
-  if(Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
-    DiscordRPC.initialize();
-    discordRpc = DiscordRPC(applicationId: "1221903147396632638");
-    discordRpc!.start();
-  }
+
+  await FlutterDiscordRPC.initialize(
+    "1221903147396632638",
+  );
+  await FlutterDiscordRPC.instance.connect(autoRetry: true, retryDelay: const Duration(seconds: 5));
   runApp(const RootWidget());
 }

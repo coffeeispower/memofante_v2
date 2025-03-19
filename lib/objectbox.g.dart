@@ -10,55 +10,66 @@
 import 'dart:typed_data';
 
 import 'package:flat_buffers/flat_buffers.dart' as fb;
-import 'package:objectbox/internal.dart'; // generated code can access "internal" functionality
-import 'package:objectbox/objectbox.dart';
+import 'package:objectbox/internal.dart'
+    as obx_int; // generated code can access "internal" functionality
+import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import 'models/discovered_word.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
-final _entities = <ModelEntity>[
-  ModelEntity(
-      id: const IdUid(1, 6752048034514049591),
+final _entities = <obx_int.ModelEntity>[
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(1, 6752048034514049591),
       name: 'DiscoveredWord',
-      lastPropertyId: const IdUid(6, 540593637611515591),
+      lastPropertyId: const obx_int.IdUid(8, 294177082876744591),
       flags: 0,
-      properties: <ModelProperty>[
-        ModelProperty(
-            id: const IdUid(1, 3839526099041725299),
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 3839526099041725299),
             name: 'entryNumber',
             type: 6,
             flags: 40,
-            indexId: const IdUid(1, 4633317927544905904)),
-        ModelProperty(
-            id: const IdUid(2, 2948905778078834034),
+            indexId: const obx_int.IdUid(1, 4633317927544905904)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 2948905778078834034),
             name: 'failedMeaningReviews',
             type: 6,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(3, 3550581583680862779),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 3550581583680862779),
             name: 'failedReadingReviews',
             type: 6,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(4, 4736474625265313524),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 4736474625265313524),
             name: 'successMeaningReviews',
             type: 6,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(5, 8487175969304409037),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 8487175969304409037),
             name: 'successReadingReviews',
             type: 6,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(6, 540593637611515591),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 540593637611515591),
             name: 'id',
             type: 6,
-            flags: 1)
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 1913155719005591592),
+            name: 'lastReadingReview',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 294177082876744591),
+            name: 'lastMeaningReview',
+            type: 10,
+            flags: 0)
       ],
-      relations: <ModelRelation>[],
-      backlinks: <ModelBacklink>[])
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[])
 ];
 
 /// Shortcut for [Store.new] that passes [getObjectBoxModel] and for Flutter
@@ -68,30 +79,38 @@ final _entities = <ModelEntity>[
 /// Note: for desktop apps it is recommended to specify a unique [directory].
 ///
 /// See [Store.new] for an explanation of all parameters.
-Future<Store> openStore(
-        {String? directory,
-        int? maxDBSizeInKB,
-        int? fileMode,
-        int? maxReaders,
-        bool queriesCaseSensitiveDefault = true,
-        String? macosApplicationGroup}) async =>
-    Store(getObjectBoxModel(),
-        directory: directory ?? (await defaultStoreDirectory()).path,
-        maxDBSizeInKB: maxDBSizeInKB,
-        fileMode: fileMode,
-        maxReaders: maxReaders,
-        queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
-        macosApplicationGroup: macosApplicationGroup);
+///
+/// For Flutter apps, also calls `loadObjectBoxLibraryAndroidCompat()` from
+/// the ObjectBox Flutter library to fix loading the native ObjectBox library
+/// on Android 6 and older.
+Future<obx.Store> openStore(
+    {String? directory,
+    int? maxDBSizeInKB,
+    int? maxDataSizeInKB,
+    int? fileMode,
+    int? maxReaders,
+    bool queriesCaseSensitiveDefault = true,
+    String? macosApplicationGroup}) async {
+  await loadObjectBoxLibraryAndroidCompat();
+  return obx.Store(getObjectBoxModel(),
+      directory: directory ?? (await defaultStoreDirectory()).path,
+      maxDBSizeInKB: maxDBSizeInKB,
+      maxDataSizeInKB: maxDataSizeInKB,
+      fileMode: fileMode,
+      maxReaders: maxReaders,
+      queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
+      macosApplicationGroup: macosApplicationGroup);
+}
 
 /// Returns the ObjectBox model definition for this project for use with
 /// [Store.new].
-ModelDefinition getObjectBoxModel() {
-  final model = ModelInfo(
+obx_int.ModelDefinition getObjectBoxModel() {
+  final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(1, 6752048034514049591),
-      lastIndexId: const IdUid(1, 4633317927544905904),
-      lastRelationId: const IdUid(0, 0),
-      lastSequenceId: const IdUid(0, 0),
+      lastEntityId: const obx_int.IdUid(1, 6752048034514049591),
+      lastIndexId: const obx_int.IdUid(1, 4633317927544905904),
+      lastRelationId: const obx_int.IdUid(0, 0),
+      lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [],
       retiredIndexUids: const [],
       retiredPropertyUids: const [],
@@ -100,29 +119,35 @@ ModelDefinition getObjectBoxModel() {
       modelVersionParserMinimum: 5,
       version: 1);
 
-  final bindings = <Type, EntityDefinition>{
-    DiscoveredWord: EntityDefinition<DiscoveredWord>(
+  final bindings = <Type, obx_int.EntityDefinition>{
+    DiscoveredWord: obx_int.EntityDefinition<DiscoveredWord>(
         model: _entities[0],
         toOneRelations: (DiscoveredWord object) => [],
         toManyRelations: (DiscoveredWord object) => {},
-        getId: (DiscoveredWord object) => object.entryNumber,
+        getId: (DiscoveredWord object) => object.id,
         setId: (DiscoveredWord object, int id) {
-          object.entryNumber = id;
+          object.id = id;
         },
         objectToFB: (DiscoveredWord object, fb.Builder fbb) {
-          fbb.startTable(7);
+          fbb.startTable(9);
           fbb.addInt64(0, object.entryNumber);
           fbb.addInt64(1, object.failedMeaningReviews);
           fbb.addInt64(2, object.failedReadingReviews);
           fbb.addInt64(3, object.successMeaningReviews);
           fbb.addInt64(4, object.successReadingReviews);
           fbb.addInt64(5, object.id);
+          fbb.addInt64(6, object.lastReadingReview?.millisecondsSinceEpoch);
+          fbb.addInt64(7, object.lastMeaningReview?.millisecondsSinceEpoch);
           fbb.finish(fbb.endTable());
-          return object.entryNumber;
+          return object.id;
         },
-        objectFromFB: (Store store, ByteData fbData) {
+        objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
+          final lastReadingReviewValue =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 16);
+          final lastMeaningReviewValue =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 18);
           final entryNumberParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           final successMeaningReviewsParam =
@@ -141,38 +166,52 @@ ModelDefinition getObjectBoxModel() {
               failedMeaningReviews: failedMeaningReviewsParam,
               successReadingReviews: successReadingReviewsParam,
               failedReadingReviews: failedReadingReviewsParam,
-              id: idParam);
+              id: idParam)
+            ..lastReadingReview = lastReadingReviewValue == null
+                ? null
+                : DateTime.fromMillisecondsSinceEpoch(lastReadingReviewValue)
+            ..lastMeaningReview = lastMeaningReviewValue == null
+                ? null
+                : DateTime.fromMillisecondsSinceEpoch(lastMeaningReviewValue);
 
           return object;
         })
   };
 
-  return ModelDefinition(model, bindings);
+  return obx_int.ModelDefinition(model, bindings);
 }
 
 /// [DiscoveredWord] entity fields to define ObjectBox queries.
 class DiscoveredWord_ {
   /// see [DiscoveredWord.entryNumber]
   static final entryNumber =
-      QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[0]);
+      obx.QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[0]);
 
   /// see [DiscoveredWord.failedMeaningReviews]
   static final failedMeaningReviews =
-      QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[1]);
+      obx.QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[1]);
 
   /// see [DiscoveredWord.failedReadingReviews]
   static final failedReadingReviews =
-      QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[2]);
+      obx.QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[2]);
 
   /// see [DiscoveredWord.successMeaningReviews]
   static final successMeaningReviews =
-      QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[3]);
+      obx.QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[3]);
 
   /// see [DiscoveredWord.successReadingReviews]
   static final successReadingReviews =
-      QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[4]);
+      obx.QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[4]);
 
   /// see [DiscoveredWord.id]
   static final id =
-      QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[5]);
+      obx.QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[5]);
+
+  /// see [DiscoveredWord.lastReadingReview]
+  static final lastReadingReview =
+      obx.QueryDateProperty<DiscoveredWord>(_entities[0].properties[6]);
+
+  /// see [DiscoveredWord.lastMeaningReview]
+  static final lastMeaningReview =
+      obx.QueryDateProperty<DiscoveredWord>(_entities[0].properties[7]);
 }

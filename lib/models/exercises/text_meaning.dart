@@ -86,7 +86,7 @@ class TextMeaningExercise implements Exercise {
     final t = AppLocalizations.of(context)!;
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           t.meaningExercise__question,
@@ -98,9 +98,22 @@ class TextMeaningExercise implements Exercise {
             style: Theme.of(context).textTheme.bodyLarge,
           )
         else
-          RubyText(
-            [RubyTextData(entry.word.first, ruby: entry.readings.last)],
-            style: const TextStyle(fontSize: 30),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8*3),
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 8*4,
+                children: [
+                  RubyText(
+                    [RubyTextData(entry.word.first, ruby: entry.readings.last)],
+                    style: const TextStyle(fontSize: 8*4),
+                  ),
+                  const Icon(Icons.arrow_forward_rounded),
+                  const Text("???", style: TextStyle(fontSize: 8*4),)
+                ],
+              ),
+            ),
           ),
       ],
     );

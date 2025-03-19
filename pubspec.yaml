@@ -44,19 +44,17 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
-  objectbox: ^2.4.0
-  objectbox_flutter_libs: ^2.4.0
+  objectbox: ^2.5.0
+  objectbox_flutter_libs: any
   path_provider: ^2.1.2
   modal_bottom_sheet: 3.0.0-pre
   path: ^1.8.3
   kana_kit: ^2.0.0
   ruby_text: ^3.0.3
   string_similarity: ^2.0.0
-  dart_discord_rpc:
-    git: 
-      url: https://github.com/coffeeispower/dart_discord_rpc.git
-      ref: master
   audioplayers: ^5.2.1
+  google_fonts: ^6.2.1
+  flutter_discord_rpc: ^1.0.0
 
 dev_dependencies:
   flutter_test:

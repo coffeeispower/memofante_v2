@@ -67,12 +67,20 @@ class ReadingExercise implements Exercise {
       children: [
         Text(
           t.readingExercise__question,
-          style: Theme.of(context).textTheme.headlineMedium,
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white.withAlpha(170))
         ),
-        Text(
-          entry.word.first,
-          style: Theme.of(context).textTheme.bodyLarge,
-        )
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 32.0),
+          child: Center(child: Column(
+            children: [
+              const Text("???"),
+              Text(
+                entry.word.first,
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+            ],
+          )),
+        ),
       ],
     );
   }
