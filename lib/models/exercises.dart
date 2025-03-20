@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:memofante/dict.dart';
+import 'package:memofante/models/sync/transaction.dart';
 import 'package:memofante/objectbox.g.dart';
 import 'discovered_word.dart';
 import 'exercises/reading.dart';
@@ -59,6 +60,7 @@ enum ExerciseState { pending, success, fail }
 double sigmoid(double x) {
   return 1.0 / (1.0 + exp(-x));
 }
+
 T weightedRandom<T>(List<T> items, List<double> weights) {
   if (items.length != weights.length) {
     throw Exception('Items and weights must be of the same size');
@@ -85,25 +87,32 @@ T weightedRandom<T>(List<T> items, List<double> weights) {
   return result!;
 }
 
-
-Exercise? getNextExercise(Box<DiscoveredWord> discoveredWordsBox,
-    bool enableReadingExercises, bool enableMeaningExercises) {
+Exercise? getNextExercise(
+    Box<DiscoveredWord> discoveredWordsBox,
+    Box<Transaction> transactionsBox,
+    bool enableReadingExercises,
+    bool enableMeaningExercises) {
   List<DiscoveredWord> discoveredWords = discoveredWordsBox.getAll();
   List<Exercise> exercises = [];
   for (var word in discoveredWords) {
     final entry = dictionary.searchEntryFromId(word.entryNumber)!;
     if (enableReadingExercises && entry.word.isNotEmpty) {
       exercises.add(ReadingExercise(
-          discoveredWord: word, discoveredWordsBox: discoveredWordsBox));
+          discoveredWord: word,
+          transactionsBox: transactionsBox,
+          discoveredWordsBox: discoveredWordsBox));
     }
     if (enableMeaningExercises && entry.meanings.isNotEmpty) {
       exercises.add(TextMeaningExercise(
-          discoveredWord: word, discoveredWordsBox: discoveredWordsBox));
+          discoveredWord: word,
+          transactionsBox: transactionsBox,
+          discoveredWordsBox: discoveredWordsBox));
     }
   }
   if (exercises.isEmpty) {
     return null;
   }
 
-  return weightedRandom(exercises, exercises.map((e) => e.calculateScore()).toList());
+  return weightedRandom(
+      exercises, exercises.map((e) => e.calculateScore()).toList());
 }

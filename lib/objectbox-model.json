@@ -4,50 +4,84 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:6752048034514049591",
-      "lastPropertyId": "8:294177082876744591",
-      "name": "DiscoveredWord",
+      "id": "2:5017812854817730120",
+      "lastPropertyId": "5:6439780598495100863",
+      "name": "Transaction",
       "properties": [
         {
-          "id": "1:3839526099041725299",
-          "name": "entryNumber",
-          "type": 6,
-          "flags": 40,
-          "indexId": "1:4633317927544905904"
-        },
-        {
-          "id": "2:2948905778078834034",
-          "name": "failedMeaningReviews",
-          "type": 6
-        },
-        {
-          "id": "3:3550581583680862779",
-          "name": "failedReadingReviews",
-          "type": 6
-        },
-        {
-          "id": "4:4736474625265313524",
-          "name": "successMeaningReviews",
-          "type": 6
-        },
-        {
-          "id": "5:8487175969304409037",
-          "name": "successReadingReviews",
-          "type": 6
-        },
-        {
-          "id": "6:540593637611515591",
+          "id": "1:5701422843779104754",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "7:1913155719005591592",
+          "id": "2:8113781645563981711",
+          "name": "type",
+          "type": 9
+        },
+        {
+          "id": "3:4055637412752322261",
+          "name": "date",
+          "type": 10
+        },
+        {
+          "id": "4:4972888990821346984",
+          "name": "entryNumber",
+          "type": 6
+        },
+        {
+          "id": "5:6439780598495100863",
+          "name": "wordJson",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:7028276808195799606",
+      "lastPropertyId": "8:4368267445308262536",
+      "name": "DiscoveredWord",
+      "properties": [
+        {
+          "id": "1:678519491055177304",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:6601863321766862790",
+          "name": "entryNumber",
+          "type": 6,
+          "flags": 40,
+          "indexId": "2:2913026964958001685"
+        },
+        {
+          "id": "3:7125231083616494578",
+          "name": "failedMeaningReviews",
+          "type": 6
+        },
+        {
+          "id": "4:699917782232502108",
+          "name": "failedReadingReviews",
+          "type": 6
+        },
+        {
+          "id": "5:4554724408188347746",
+          "name": "successMeaningReviews",
+          "type": 6
+        },
+        {
+          "id": "6:4692293890782904263",
+          "name": "successReadingReviews",
+          "type": 6
+        },
+        {
+          "id": "7:1769075605203332697",
           "name": "lastReadingReview",
           "type": 10
         },
         {
-          "id": "8:294177082876744591",
+          "id": "8:4368267445308262536",
           "name": "lastMeaningReview",
           "type": 10
         }
@@ -55,15 +89,26 @@
       "relations": []
     }
   ],
-  "lastEntityId": "1:6752048034514049591",
-  "lastIndexId": "1:4633317927544905904",
+  "lastEntityId": "3:7028276808195799606",
+  "lastIndexId": "2:2913026964958001685",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
-  "retiredEntityUids": [],
+  "retiredEntityUids": [
+    6752048034514049591
+  ],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    3839526099041725299,
+    2948905778078834034,
+    3550581583680862779,
+    4736474625265313524,
+    8487175969304409037,
+    540593637611515591,
+    1913155719005591592,
+    294177082876744591
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

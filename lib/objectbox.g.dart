@@ -16,54 +16,89 @@ import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import 'models/discovered_word.dart';
+import 'models/sync/transaction.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
 final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(1, 6752048034514049591),
-      name: 'DiscoveredWord',
-      lastPropertyId: const obx_int.IdUid(8, 294177082876744591),
+      id: const obx_int.IdUid(2, 5017812854817730120),
+      name: 'Transaction',
+      lastPropertyId: const obx_int.IdUid(5, 6439780598495100863),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 3839526099041725299),
-            name: 'entryNumber',
-            type: 6,
-            flags: 40,
-            indexId: const obx_int.IdUid(1, 4633317927544905904)),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 2948905778078834034),
-            name: 'failedMeaningReviews',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 3550581583680862779),
-            name: 'failedReadingReviews',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 4736474625265313524),
-            name: 'successMeaningReviews',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 8487175969304409037),
-            name: 'successReadingReviews',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 540593637611515591),
+            id: const obx_int.IdUid(1, 5701422843779104754),
             name: 'id',
             type: 6,
             flags: 1),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 1913155719005591592),
+            id: const obx_int.IdUid(2, 8113781645563981711),
+            name: 'type',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 4055637412752322261),
+            name: 'date',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 4972888990821346984),
+            name: 'entryNumber',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 6439780598495100863),
+            name: 'wordJson',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(3, 7028276808195799606),
+      name: 'DiscoveredWord',
+      lastPropertyId: const obx_int.IdUid(8, 4368267445308262536),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 678519491055177304),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 6601863321766862790),
+            name: 'entryNumber',
+            type: 6,
+            flags: 40,
+            indexId: const obx_int.IdUid(2, 2913026964958001685)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 7125231083616494578),
+            name: 'failedMeaningReviews',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 699917782232502108),
+            name: 'failedReadingReviews',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 4554724408188347746),
+            name: 'successMeaningReviews',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 4692293890782904263),
+            name: 'successReadingReviews',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 1769075605203332697),
             name: 'lastReadingReview',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(8, 294177082876744591),
+            id: const obx_int.IdUid(8, 4368267445308262536),
             name: 'lastMeaningReview',
             type: 10,
             flags: 0)
@@ -107,21 +142,74 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(1, 6752048034514049591),
-      lastIndexId: const obx_int.IdUid(1, 4633317927544905904),
+      lastEntityId: const obx_int.IdUid(3, 7028276808195799606),
+      lastIndexId: const obx_int.IdUid(2, 2913026964958001685),
       lastRelationId: const obx_int.IdUid(0, 0),
       lastSequenceId: const obx_int.IdUid(0, 0),
-      retiredEntityUids: const [],
+      retiredEntityUids: const [6752048034514049591],
       retiredIndexUids: const [],
-      retiredPropertyUids: const [],
+      retiredPropertyUids: const [
+        3839526099041725299,
+        2948905778078834034,
+        3550581583680862779,
+        4736474625265313524,
+        8487175969304409037,
+        540593637611515591,
+        1913155719005591592,
+        294177082876744591
+      ],
       retiredRelationUids: const [],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
       version: 1);
 
   final bindings = <Type, obx_int.EntityDefinition>{
-    DiscoveredWord: obx_int.EntityDefinition<DiscoveredWord>(
+    Transaction: obx_int.EntityDefinition<Transaction>(
         model: _entities[0],
+        toOneRelations: (Transaction object) => [],
+        toManyRelations: (Transaction object) => {},
+        getId: (Transaction object) => object.id,
+        setId: (Transaction object, int id) {
+          object.id = id;
+        },
+        objectToFB: (Transaction object, fb.Builder fbb) {
+          final typeOffset = fbb.writeString(object.type);
+          final wordJsonOffset = object.wordJson == null
+              ? null
+              : fbb.writeString(object.wordJson!);
+          fbb.startTable(6);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, typeOffset);
+          fbb.addInt64(2, object.date.millisecondsSinceEpoch);
+          fbb.addInt64(3, object.entryNumber);
+          fbb.addOffset(4, wordJsonOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final typeParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final dateParam = DateTime.fromMillisecondsSinceEpoch(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0));
+          final wordJsonParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 12);
+          final entryNumberParam =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 10);
+          final object = Transaction(
+              id: idParam,
+              type: typeParam,
+              date: dateParam,
+              wordJson: wordJsonParam,
+              entryNumber: entryNumberParam);
+
+          return object;
+        }),
+    DiscoveredWord: obx_int.EntityDefinition<DiscoveredWord>(
+        model: _entities[1],
         toOneRelations: (DiscoveredWord object) => [],
         toManyRelations: (DiscoveredWord object) => {},
         getId: (DiscoveredWord object) => object.id,
@@ -130,12 +218,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (DiscoveredWord object, fb.Builder fbb) {
           fbb.startTable(9);
-          fbb.addInt64(0, object.entryNumber);
-          fbb.addInt64(1, object.failedMeaningReviews);
-          fbb.addInt64(2, object.failedReadingReviews);
-          fbb.addInt64(3, object.successMeaningReviews);
-          fbb.addInt64(4, object.successReadingReviews);
-          fbb.addInt64(5, object.id);
+          fbb.addInt64(0, object.id);
+          fbb.addInt64(1, object.entryNumber);
+          fbb.addInt64(2, object.failedMeaningReviews);
+          fbb.addInt64(3, object.failedReadingReviews);
+          fbb.addInt64(4, object.successMeaningReviews);
+          fbb.addInt64(5, object.successReadingReviews);
           fbb.addInt64(6, object.lastReadingReview?.millisecondsSinceEpoch);
           fbb.addInt64(7, object.lastMeaningReview?.millisecondsSinceEpoch);
           fbb.finish(fbb.endTable());
@@ -149,17 +237,17 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final lastMeaningReviewValue =
               const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 18);
           final entryNumberParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final successMeaningReviewsParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
-          final failedMeaningReviewsParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0);
-          final successReadingReviewsParam =
+          final successMeaningReviewsParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
-          final failedReadingReviewsParam =
+          final failedMeaningReviewsParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0);
-          final idParam =
+          final successReadingReviewsParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
+          final failedReadingReviewsParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           final object = DiscoveredWord(
               entryNumber: entryNumberParam,
               successMeaningReviews: successMeaningReviewsParam,
@@ -181,37 +269,60 @@ obx_int.ModelDefinition getObjectBoxModel() {
   return obx_int.ModelDefinition(model, bindings);
 }
 
+/// [Transaction] entity fields to define ObjectBox queries.
+class Transaction_ {
+  /// see [Transaction.id]
+  static final id =
+      obx.QueryIntegerProperty<Transaction>(_entities[0].properties[0]);
+
+  /// see [Transaction.type]
+  static final type =
+      obx.QueryStringProperty<Transaction>(_entities[0].properties[1]);
+
+  /// see [Transaction.date]
+  static final date =
+      obx.QueryDateProperty<Transaction>(_entities[0].properties[2]);
+
+  /// see [Transaction.entryNumber]
+  static final entryNumber =
+      obx.QueryIntegerProperty<Transaction>(_entities[0].properties[3]);
+
+  /// see [Transaction.wordJson]
+  static final wordJson =
+      obx.QueryStringProperty<Transaction>(_entities[0].properties[4]);
+}
+
 /// [DiscoveredWord] entity fields to define ObjectBox queries.
 class DiscoveredWord_ {
+  /// see [DiscoveredWord.id]
+  static final id =
+      obx.QueryIntegerProperty<DiscoveredWord>(_entities[1].properties[0]);
+
   /// see [DiscoveredWord.entryNumber]
   static final entryNumber =
-      obx.QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[0]);
+      obx.QueryIntegerProperty<DiscoveredWord>(_entities[1].properties[1]);
 
   /// see [DiscoveredWord.failedMeaningReviews]
   static final failedMeaningReviews =
-      obx.QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[1]);
+      obx.QueryIntegerProperty<DiscoveredWord>(_entities[1].properties[2]);
 
   /// see [DiscoveredWord.failedReadingReviews]
   static final failedReadingReviews =
-      obx.QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[2]);
+      obx.QueryIntegerProperty<DiscoveredWord>(_entities[1].properties[3]);
 
   /// see [DiscoveredWord.successMeaningReviews]
   static final successMeaningReviews =
-      obx.QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[3]);
+      obx.QueryIntegerProperty<DiscoveredWord>(_entities[1].properties[4]);
 
   /// see [DiscoveredWord.successReadingReviews]
   static final successReadingReviews =
-      obx.QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[4]);
-
-  /// see [DiscoveredWord.id]
-  static final id =
-      obx.QueryIntegerProperty<DiscoveredWord>(_entities[0].properties[5]);
+      obx.QueryIntegerProperty<DiscoveredWord>(_entities[1].properties[5]);
 
   /// see [DiscoveredWord.lastReadingReview]
   static final lastReadingReview =
-      obx.QueryDateProperty<DiscoveredWord>(_entities[0].properties[6]);
+      obx.QueryDateProperty<DiscoveredWord>(_entities[1].properties[6]);
 
   /// see [DiscoveredWord.lastMeaningReview]
   static final lastMeaningReview =
-      obx.QueryDateProperty<DiscoveredWord>(_entities[0].properties[7]);
+      obx.QueryDateProperty<DiscoveredWord>(_entities[1].properties[7]);
 }

@@ -15,9 +15,11 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   objectBox = await ObjectBox.create();
 
-  await FlutterDiscordRPC.initialize(
-    "1221903147396632638",
-  );
-  await FlutterDiscordRPC.instance.connect(autoRetry: true, retryDelay: const Duration(seconds: 5));
+  if(!Platform.isAndroid && !Platform.isIOS) {
+    await FlutterDiscordRPC.initialize(
+      "1221903147396632638",
+    );
+    await FlutterDiscordRPC.instance.connect(autoRetry: true, retryDelay: const Duration(seconds: 5));
+  }
   runApp(const RootWidget());
 }

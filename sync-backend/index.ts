@@ -1,6 +1,7 @@
 import { type ServerWebSocket } from "bun";
 import { pipe, Schema } from "effect";
 import type { Utc } from "effect/DateTime";
+import { ParseError } from "effect/ParseResult";
 
 // Mapa dos clientes agrupados por syncCode (vários dispositivos podem usar o mesmo código)
 const clients: Map<string, Set<ServerWebSocket<undefined>>> = new Map();
@@ -17,8 +18,8 @@ export const DiscoveredWord = Schema.Struct({
   failedReadingReviews: Schema.Int,
   successMeaningReviews: Schema.Int,
   successReadingReviews: Schema.Int,
-  lastReadingReview: Schema.optional(Schema.DateTimeUtc),
-  lastMeaningReview: Schema.optional(Schema.DateTimeUtc)
+  lastReadingReview: Schema.NullOr(Schema.DateTimeUtc),
+  lastMeaningReview: Schema.NullOr(Schema.DateTimeUtc)
 });
 
 // Acrescentei o campo "date" em ambas as transações para poder ordenar
@@ -83,7 +84,7 @@ namespace Server {
   }
 }
 // Função auxiliar para comparar duas datas (do tipo Schema.DateTimeUtc)
-function chooseLaterDate(a: Utc | undefined, b: Utc | undefined) {
+function chooseLaterDate(a: Utc | null, b: Utc | null) {
   if (!a) return b;
   if (!b) return a;
   return a.epochMillis >= b.epochMillis ? a : b;
@@ -176,57 +177,66 @@ Bun.serve<undefined, never>({
       // Inicialização, se necessário.
     },
     message(ws, messageString) {
-      const message = pipe(
-        messageString,
-        String,
-        JSON.parse,
-        Schema.decodeUnknownSync(Client.Packet)
-      ) as Client.Types.BoundPacket;
-      console.log(message);
-      switch (message.type) {
-        case "use_sync_code": {
-          // Regista o cliente com o syncCode
-          clientSyncCode.set(ws, message.syncCode);
-          if (!clients.has(message.syncCode)) {
-            clients.set(message.syncCode, new Set());
+      try {
+        const message = pipe(
+          messageString,
+          String,
+          JSON.parse,
+          Schema.decodeUnknownSync(Client.Packet)
+        ) as Client.Types.BoundPacket;
+        console.log(message);
+        console.log("<------ IN");
+        switch (message.type) {
+          case "use_sync_code": {
+            // Regista o cliente com o syncCode
+            clientSyncCode.set(ws, message.syncCode);
+            if (!clients.has(message.syncCode)) {
+              clients.set(message.syncCode, new Set());
+            }
+            clients.get(message.syncCode)!.add(ws);
+            break;
           }
-          clients.get(message.syncCode)!.add(ws);
-          break;
-        }
-        case "request_sync": {
-          // Quando um cliente solicita sincronização, envia um pacote "request_local_state" para todos os clientes com o mesmo syncCode
-          const syncCode = clientSyncCode.get(ws);
-          if (!syncCode) {
-            console.error("Cliente não registado com syncCode.");
-            return;
-          }
-          // Limpa dados antigos de sincronização para este syncCode
-          syncData.delete(syncCode);
-          const requestPayload = JSON.stringify(Schema.encodeSync(Server.RequestLocalStatePacket)({ type: "request_local_state" }));
-          for (const client of clients.get(syncCode)!) {
-            client.send(requestPayload);
-          }
-          break;
-        }
-        case "local_state": {
-          // Recebe o estado local de um cliente
-          const syncCode = clientSyncCode.get(ws);
-          if (!syncCode) {
-            console.error("Cliente não registado com syncCode.");
-            return;
-          }
-          if (!syncData.has(syncCode)) {
-            syncData.set(syncCode, []);
-          }
-          syncData.get(syncCode)!.push({
-            words: message.words,
-            transactions: message.transactions
-          });
+          case "request_sync": {
+            // Quando um cliente solicita sincronização, envia um pacote "request_local_state" para todos os clientes com o mesmo syncCode
+            const syncCode = clientSyncCode.get(ws);
+            if (!syncCode) {
+              console.error("Cliente não registado com syncCode.");
+              return;
+            }
+            // Limpa dados antigos de sincronização para este syncCode
+            syncData.delete(syncCode);
+            const requestPayload = JSON.stringify(Schema.encodeSync(Server.RequestLocalStatePacket)({ type: "request_local_state" }));
 
-          // Verifica se já recebemos os dados de todos os clientes para este syncCode
-          calculateAndSendFinalStateIfFinished(syncCode);
-          break;
+            console.log(JSON.parse(requestPayload));
+            console.log("------> OUT");
+            for (const client of clients.get(syncCode)!) {
+              client.send(requestPayload);
+            }
+            break;
+          }
+          case "local_state": {
+            // Recebe o estado local de um cliente
+            const syncCode = clientSyncCode.get(ws);
+            if (!syncCode) {
+              console.error("Cliente não registado com syncCode.");
+              return;
+            }
+            if (!syncData.has(syncCode)) {
+              syncData.set(syncCode, []);
+            }
+            syncData.get(syncCode)!.push({
+              words: message.words,
+              transactions: message.transactions
+            });
+
+            // Verifica se já recebemos os dados de todos os clientes para este syncCode
+            calculateAndSendFinalStateIfFinished(syncCode);
+            break;
+          }
         }
+      } catch(e: any) {
+        console.error(e.message);
+        ws.close();
       }
     },
     close(ws, code, reason) {
@@ -252,6 +262,9 @@ function calculateAndSendFinalStateIfFinished(syncCode: string) {
     const finalWords = mergeSyncData(syncData.get(syncCode)!);
     // Envia o estado final para todos os clientes registados com este syncCode
     const payload = JSON.stringify(Schema.encodeSync(Server.SyncCompletePacket)({ type: "sync_complete", finalWords }));
+
+    console.log(JSON.parse(payload));
+    console.log("------> OUT");
     for (const client of clients.get(syncCode)!) {
       client.send(payload);
     }

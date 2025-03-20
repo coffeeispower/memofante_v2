@@ -25,7 +25,7 @@ class DiscoveredWord {
       (failedReadingReviews.toDouble()) / (totalReadingReviews.toDouble());
   double get failedMeaningRate =>
       (failedMeaningReviews.toDouble()) / (totalMeaningReviews.toDouble());
-  
+
   int get totalReadingReviews => successReadingReviews + failedReadingReviews;
   int get totalMeaningReviews => successMeaningReviews + failedMeaningReviews;
   int get totalReviews => totalReadingReviews + totalMeaningReviews;
@@ -56,5 +56,33 @@ class DiscoveredWord {
         .query(DiscoveredWord_.entryNumber.equals(entryNumber))
         .build()
         .findUnique();
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'entryNumber': entryNumber,
+      'failedMeaningReviews': failedMeaningReviews,
+      'failedReadingReviews': failedReadingReviews,
+      'successMeaningReviews': successMeaningReviews,
+      'successReadingReviews': successReadingReviews,
+      'lastReadingReview': lastReadingReview?.toIso8601String(),
+      'lastMeaningReview': lastMeaningReview?.toIso8601String(),
+    };
+  }
+
+  factory DiscoveredWord.fromJson(Map<String, dynamic> json) {
+    return DiscoveredWord(
+      entryNumber: json['entryNumber'] as int,
+      successMeaningReviews: json['successMeaningReviews'] as int,
+      failedMeaningReviews: json['failedMeaningReviews'] as int,
+      successReadingReviews: json['successReadingReviews'] as int,
+      failedReadingReviews: json['failedReadingReviews'] as int,
+    )
+      ..lastReadingReview = json['lastReadingReview'] != null
+          ? DateTime.parse(json['lastReadingReview'] as String)
+          : null
+      ..lastMeaningReview = json['lastMeaningReview'] != null
+          ? DateTime.parse(json['lastMeaningReview'] as String)
+          : null;
   }
 }

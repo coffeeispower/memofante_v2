@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memofante/models/sync/transaction.dart';
 import 'package:memofante/objectbox.g.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -9,10 +10,13 @@ import '../exercises.dart';
 class ReadingExercise implements Exercise {
   final DiscoveredWord discoveredWord;
   final Box<DiscoveredWord> discoveredWordsBox;
+  final Box<Transaction> transactionsBox;
   DictEntry get entry =>
       dictionary.searchEntryFromId(discoveredWord.entryNumber)!;
   const ReadingExercise(
-      {required this.discoveredWord, required this.discoveredWordsBox});
+      {required this.discoveredWord,
+      required this.discoveredWordsBox,
+      required this.transactionsBox});
   @override
   bool checkAnswer(Object answerIn) {
     assert(answerIn is String);
@@ -65,13 +69,15 @@ class ReadingExercise implements Exercise {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          t.readingExercise__question,
-          style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white.withAlpha(170))
-        ),
+        Text(t.readingExercise__question,
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge!
+                .copyWith(color: Colors.white.withAlpha(170))),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 32.0),
-          child: Center(child: Column(
+          child: Center(
+              child: Column(
             children: [
               const Text("???"),
               Text(
@@ -90,6 +96,7 @@ class ReadingExercise implements Exercise {
     discoveredWord.failedReadingReviews++;
     discoveredWord.lastReadingReview = DateTime.now();
     discoveredWordsBox.put(discoveredWord);
+    Transaction.registerAddWord(transactionsBox, discoveredWord);
   }
 
   @override
@@ -97,6 +104,7 @@ class ReadingExercise implements Exercise {
     discoveredWord.successReadingReviews++;
     discoveredWord.lastReadingReview = DateTime.now();
     discoveredWordsBox.put(discoveredWord);
+    Transaction.registerAddWord(transactionsBox, discoveredWord);
   }
 
   @override
@@ -107,6 +115,7 @@ class ReadingExercise implements Exercise {
       discoveredWord.lastReadingReview,
     );
   }
+
   @override
   String get word => entry.word.first;
 }

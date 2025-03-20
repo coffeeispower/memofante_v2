@@ -2,6 +2,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:memofante/base/widgets/responsive_state.dart';
 import 'package:memofante/dict.dart';
+import 'package:memofante/models/sync/transaction.dart';
 import 'package:memofante/objectbox.g.dart';
 import 'package:memofante/models/discovered_word.dart';
 import 'package:ruby_text/ruby_text.dart';
@@ -10,10 +11,12 @@ class DiscoveredWordItem extends StatefulWidget {
   const DiscoveredWordItem({
     super.key,
     required this.discoveredWordsBox,
+    required this.transactionsBox,
     required this.word,
   });
   final DiscoveredWord word;
   final Box<DiscoveredWord> discoveredWordsBox;
+  final Box<Transaction> transactionsBox;
 
   @override
   State<DiscoveredWordItem> createState() => _DiscoveredWordItemState();
@@ -89,6 +92,8 @@ class _DiscoveredWordItemState extends ResponsiveState<DiscoveredWordItem> {
             .query(DiscoveredWord_.entryNumber.equals(widget.word.entryNumber))
             .build()
             .remove();
+        Transaction.registerRemoveWord(
+            widget.transactionsBox, widget.word.entryNumber);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(t.snackbars__discoveredWord__deleted(
               this.wordStringOfDiscoveredWord)),

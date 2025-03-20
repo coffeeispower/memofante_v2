@@ -7,6 +7,7 @@ import 'package:memofante/base/widgets/responsive_state.dart';
 import 'package:memofante/main.dart';
 import 'package:memofante/models/discovered_word.dart';
 import 'package:memofante/models/exercises.dart';
+import 'package:memofante/models/sync/transaction.dart';
 import 'package:memofante/objectbox.g.dart';
 
 class ReviewPage extends StatefulWidget {
@@ -16,10 +17,12 @@ class ReviewPage extends StatefulWidget {
   const ReviewPage({
     super.key,
     required this.discoveredWordBox,
+    required this.transactionsBox,
     required this.enableReadingExercises,
     required this.enableMeaningExercises,
   });
   final Box<DiscoveredWord> discoveredWordBox;
+  final Box<Transaction> transactionsBox;
   @override
   State<ReviewPage> createState() => _ReviewPageState();
 }
@@ -40,8 +43,11 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
     state = ExerciseState.pending;
     bottomSheetController?.close();
     stringInputController.clear();
-    final nextExercise = getNextExercise(widget.discoveredWordBox,
-        widget.enableReadingExercises, widget.enableMeaningExercises);
+    final nextExercise = getNextExercise(
+        widget.discoveredWordBox,
+        widget.transactionsBox,
+        widget.enableReadingExercises,
+        widget.enableMeaningExercises);
     currentExercise = nextExercise;
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
@@ -54,19 +60,21 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
       }
 
       final t = AppLocalizations.of(context)!;
-      FlutterDiscordRPC.instance.setActivity(
-        activity: RPCActivity(
-          state: t.discordPresenceStateReviewing,
-          details: t.discordPresenceDetailsReviewing(currentExercise!.word),
-          assets: const RPCAssets(
-            smallImage: "reviewing",
-            largeImage: "memofante-icon",
+      try {
+        FlutterDiscordRPC.instance.setActivity(
+          activity: RPCActivity(
+            state: t.discordPresenceStateReviewing,
+            details: t.discordPresenceDetailsReviewing(currentExercise!.word),
+            assets: const RPCAssets(
+              smallImage: "reviewing",
+              largeImage: "memofante-icon",
+            ),
+            timestamps: RPCTimestamps(
+              start: startTime,
+            ),
           ),
-          timestamps: RPCTimestamps(
-            start: startTime,
-          ),
-        ),
-      );
+        );
+      } catch (_) {}
     });
   }
 
@@ -80,7 +88,7 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
       child: Padding(
         padding: const EdgeInsets.all(8.0 * 2),
         child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 8 * 70),
+          constraints: const BoxConstraints(maxWidth: 8 * 70),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -228,7 +236,7 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
               state: t.success_review_headline,
               details: t.discordPresenceDetailsReviewing(currentExercise!.word),
               assets: const RPCAssets(
-                smallImage: "checkmark",
+                smallImage: "x",
                 largeImage: "memofante-icon",
               ),
               timestamps: RPCTimestamps(
@@ -252,7 +260,7 @@ class _ReviewPageState extends ResponsiveState<ReviewPage> {
                 details:
                     t.discordPresenceDetailsReviewing(currentExercise!.word),
                 assets: const RPCAssets(
-                  smallImage: "x",
+                  smallImage: "reviewing",
                   largeImage: "memofante-icon",
                 ),
                 timestamps: RPCTimestamps(

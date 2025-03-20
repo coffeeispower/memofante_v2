@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memofante/models/sync/transaction.dart';
 import 'package:memofante/objectbox.g.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ruby_text/ruby_text.dart';
@@ -11,9 +12,12 @@ import '../exercises.dart';
 class TextMeaningExercise implements Exercise {
   final DiscoveredWord discoveredWord;
   final Box<DiscoveredWord> discoveredWordsBox;
+  final Box<Transaction> transactionsBox;
+
   const TextMeaningExercise({
     required this.discoveredWord,
     required this.discoveredWordsBox,
+    required this.transactionsBox,
   });
 
   @override
@@ -54,6 +58,7 @@ class TextMeaningExercise implements Exercise {
     discoveredWord.failedMeaningReviews++;
     discoveredWord.lastReadingReview = DateTime.now();
     discoveredWordsBox.put(discoveredWord);
+    Transaction.registerAddWord(transactionsBox, discoveredWord);
   }
 
   @override
@@ -61,6 +66,7 @@ class TextMeaningExercise implements Exercise {
     discoveredWord.successMeaningReviews++;
     discoveredWord.lastReadingReview = DateTime.now();
     discoveredWordsBox.put(discoveredWord);
+    Transaction.registerAddWord(transactionsBox, discoveredWord);
   }
 
   @override
@@ -99,18 +105,21 @@ class TextMeaningExercise implements Exercise {
           )
         else
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8*3),
+            padding: const EdgeInsets.symmetric(vertical: 8 * 3),
             child: Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8*4,
+                spacing: 8 * 4,
                 children: [
                   RubyText(
                     [RubyTextData(entry.word.first, ruby: entry.readings.last)],
-                    style: const TextStyle(fontSize: 8*4),
+                    style: const TextStyle(fontSize: 8 * 4),
                   ),
                   const Icon(Icons.arrow_forward_rounded),
-                  const Text("???", style: TextStyle(fontSize: 8*4),)
+                  const Text(
+                    "???",
+                    style: TextStyle(fontSize: 8 * 4),
+                  )
                 ],
               ),
             ),
@@ -118,7 +127,7 @@ class TextMeaningExercise implements Exercise {
       ],
     );
   }
-  
+
   @override
   String get word => entry.word.first;
 }
