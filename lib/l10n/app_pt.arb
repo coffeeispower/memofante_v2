@@ -49,6 +49,11 @@
         "type": "String"
       }
     }
-  }
-
+  },
+  "sync_settings__title": "Configurações de sincronizaçao",
+  "sync_settings__sync_code": "Código de sincronização",
+  "sync_settings__sync_server_url": "URL do servidor",
+  "sync_settings__cancel": "Cancelar",
+  "sync_settings__ok": "OK",
+  "loading_dictionary": "O dicionário está a carregar..."
 }

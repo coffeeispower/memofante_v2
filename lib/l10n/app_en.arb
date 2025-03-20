@@ -57,5 +57,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "sync_settings__title": "Sync Settings",
+  "sync_settings__sync_code": "Sync Code",
+  "sync_settings__sync_server_url": "Sync server URL",
+  "sync_settings__cancel": "Cancel",
+  "sync_settings__ok": "OK",
+  "loading_dictionary": "Loading dictionary..."
 }

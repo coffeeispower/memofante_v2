@@ -85,27 +85,33 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
     final TextEditingController codeController =
         TextEditingController(text: prefs.getString('syncCode'));
     final TextEditingController urlController = TextEditingController(
-        text: prefs.getString('syncServerUrl') ?? 'ws://localhost:3000');
+        text: prefs.getString('syncServerUrl') ?? 'wss://memofante-sync-backend.fly.dev');
 
     final result = await showDialog<Map<String, String>>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Enter Sync Details'),
+      builder: (context) {
+        final t = AppLocalizations.of(context)!;
+
+        return AlertDialog(
+        title: Text(t.sync_settings__title),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: codeController,
               autofocus: true,
-              decoration: const InputDecoration(
-                hintText: 'Sync Code',
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: t.sync_settings__sync_code,
+                hintText: 'e.g. 918364'
               ),
             ),
             const SizedBox(height: 8),
             TextField(
               controller: urlController,
-              decoration: const InputDecoration(
-                hintText: 'Sync Server URL',
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: t.sync_settings__sync_server_url,
               ),
             ),
           ],
@@ -123,7 +129,8 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
             child: const Text('OK'),
           ),
         ],
-      ),
+      );
+      },
     );
     if (result == null) return false;
     // Save the sync details in SharedPreferences
@@ -171,13 +178,13 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
                 discoveredWordsBox: discoveredWordsBox,
                 transactionsBox: transactionsBox,
               )
-            : const Text("Loading dictionary..."),
+            : Text(t.loading_dictionary),
       ),
       floatingActionButton: Builder(builder: (context) {
         final syncClient = Provider.of<SyncWebSocketClient>(context);
         return Column(
           mainAxisSize: MainAxisSize.min,
-          spacing: 8,
+          spacing: 16,
           children: [
             FloatingActionButton(
               heroTag: "sync",
@@ -185,6 +192,7 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
                 syncClient.requestSync();
               },
               tooltip: "Sync",
+              mini: true,
               backgroundColor: Colors.white,
               child: syncClient.syncState != SyncState.idle
                   ? const RotatingIcon(icon: Icon(Icons.sync))

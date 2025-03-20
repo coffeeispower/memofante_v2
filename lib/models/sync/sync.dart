@@ -53,7 +53,7 @@ class SyncWebSocketClient extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final storedSyncCode = prefs.getString('syncCode');
     final storedUrl =
-        prefs.getString('syncServerUrl') ?? 'ws://localhost:3000';
+        prefs.getString('syncServerUrl') ?? 'wss://memofante-sync-backend.fly.dev';
     if (storedSyncCode == null) {
       await connect(storedUrl);
       return;

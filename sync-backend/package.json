@@ -1,9 +1,13 @@
 {
   "name": "sync-backend",
-  "module": "index.ts",
+  "main": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "start": "bun run index.ts"
+  },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.7.8",
     "@types/bun": "latest"
   },
   "peerDependencies": {
