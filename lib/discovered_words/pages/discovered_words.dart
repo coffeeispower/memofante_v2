@@ -85,7 +85,8 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
     final TextEditingController codeController =
         TextEditingController(text: prefs.getString('syncCode'));
     final TextEditingController urlController = TextEditingController(
-        text: prefs.getString('syncServerUrl') ?? 'wss://memofante-sync-backend.fly.dev');
+        text: prefs.getString('syncServerUrl') ??
+            'wss://memofante-sync-backend.fly.dev');
 
     final result = await showDialog<Map<String, String>>(
       context: context,
@@ -93,43 +94,42 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
         final t = AppLocalizations.of(context)!;
 
         return AlertDialog(
-        title: Text(t.sync_settings__title),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: codeController,
-              autofocus: true,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                labelText: t.sync_settings__sync_code,
-                hintText: 'e.g. 918364'
+          title: Text(t.sync_settings__title),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: codeController,
+                autofocus: true,
+                decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: t.sync_settings__sync_code,
+                    hintText: 'e.g. 918364'),
               ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: urlController,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: t.sync_settings__sync_server_url,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(null),
+              child: const Text('Cancel'),
             ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: urlController,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                labelText: t.sync_settings__sync_server_url,
-              ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop({
+                'syncCode': codeController.text,
+                'syncServerUrl': urlController.text,
+              }),
+              child: const Text('OK'),
             ),
           ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(null),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop({
-              'syncCode': codeController.text,
-              'syncServerUrl': urlController.text,
-            }),
-            child: const Text('OK'),
-          ),
-        ],
-      );
+        );
       },
     );
     if (result == null) return false;
@@ -182,18 +182,21 @@ class _DiscoveredWordsState extends State<DiscoveredWords> {
       ),
       floatingActionButton: Builder(builder: (context) {
         final syncClient = Provider.of<SyncWebSocketClient>(context);
+        print(syncClient.syncState);
         return Column(
           mainAxisSize: MainAxisSize.min,
           spacing: 16,
           children: [
             FloatingActionButton(
               heroTag: "sync",
-              onPressed: () async {
-                syncClient.requestSync();
-              },
+              onPressed: syncClient.canSync
+                  ? () async {
+                      syncClient.requestSync();
+                    }
+                  : null,
               tooltip: "Sync",
               mini: true,
-              backgroundColor: Colors.white,
+              backgroundColor: syncClient.canSync ? Colors.white : Colors.grey,
               child: syncClient.syncState != SyncState.idle
                   ? const RotatingIcon(icon: Icon(Icons.sync))
                   : const Icon(Icons.sync),
@@ -444,7 +447,7 @@ class RotatingIcon extends StatefulWidget {
   const RotatingIcon({
     Key? key,
     required this.icon,
-    this.duration = const Duration(seconds: 2),
+    this.duration = const Duration(milliseconds: 500),
   }) : super(key: key);
 
   @override
@@ -454,9 +457,7 @@ class RotatingIcon extends StatefulWidget {
 class _RotatingIconState extends State<RotatingIcon>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller =
-      AnimationController(vsync: this, duration: widget.duration)
-        ..repeat()
-        ..reverse();
+      AnimationController(vsync: this, duration: widget.duration)..repeat();
 
   @override
   void dispose() {
@@ -467,7 +468,7 @@ class _RotatingIconState extends State<RotatingIcon>
   @override
   Widget build(BuildContext context) {
     return RotationTransition(
-      turns: _controller,
+      turns: Tween(begin: 0.0, end: -1.0).animate(_controller),
       child: widget.icon,
     );
   }

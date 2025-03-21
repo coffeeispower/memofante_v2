@@ -36,6 +36,8 @@ class SyncWebSocketClient extends ChangeNotifier {
   // New fields for reconnection logic.
   late String _url;
   bool _isManuallyClosed = true;
+  bool canSync = false;
+
   bool get isManuallyClosed => _isManuallyClosed;
   SyncState syncState;
   SyncWebSocketClient(
@@ -52,8 +54,8 @@ class SyncWebSocketClient extends ChangeNotifier {
   Future<void> updateSyncSettingsFromSharedPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     final storedSyncCode = prefs.getString('syncCode');
-    final storedUrl =
-        prefs.getString('syncServerUrl') ?? 'wss://memofante-sync-backend.fly.dev';
+    final storedUrl = prefs.getString('syncServerUrl') ??
+        'wss://memofante-sync-backend.fly.dev';
     if (storedSyncCode == null) {
       await connect(storedUrl);
       return;
@@ -74,7 +76,14 @@ class SyncWebSocketClient extends ChangeNotifier {
       _socket = socket;
       // Listen with inline onDone and onError that attempt reconnection.
       _socket?.listen(
-        _handleMessage,
+        (data) {
+          if (socket == _socket) {
+            _handleMessage(data);
+          } else {
+            // Close dangling connection
+            socket.close();
+          }
+        },
         onDone: () {
           print("Connection closed $socket");
           _handleDone();
@@ -84,7 +93,6 @@ class SyncWebSocketClient extends ChangeNotifier {
           syncState = SyncState.idle;
         },
         onError: (error) {
-
           print("Connection closed (error) $socket");
           _handleError(error);
           if (!_isManuallyClosed && socket == _socket) {
@@ -117,10 +125,13 @@ class SyncWebSocketClient extends ChangeNotifier {
   void _sendUseSyncCode() {
     final packet = {"type": "use_sync_code", "syncCode": _syncCode!};
     _socket?.add(jsonEncode(packet));
+    canSync = true;
+    notifyListeners();
   }
 
   void requestSync() {
     syncState = SyncState.requestedSync;
+    canSync = false;
     this.notifyListeners();
     final packet = {"type": "request_sync"};
     _socket?.add(jsonEncode(packet));
@@ -140,15 +151,23 @@ class SyncWebSocketClient extends ChangeNotifier {
         case "request_local_state":
           // Respond to server's request by sending local state.
           sendLocalState();
+          canSync = false;
           break;
         case "sync_complete":
           // Clear local discovered words and transactions.
           discoveredWordBox.removeAll();
           transactionBox.removeAll();
           // Save the discovered words state received from the server.
-          List<Map<String, dynamic>> finalWords = (message['finalWords'] as List<dynamic>).map((el) => el as Map<String, dynamic>).toList();
+          List<Map<String, dynamic>> finalWords =
+              (message['finalWords'] as List<dynamic>)
+                  .map((el) => el as Map<String, dynamic>)
+                  .toList();
           discoveredWordBox
               .putMany(finalWords.map(DiscoveredWord.fromJson).toList());
+          syncState = SyncState.idle;
+          canSync = true;
+          notifyListeners();
+
           break;
         default:
           // Unknown packet type.
@@ -163,12 +182,14 @@ class SyncWebSocketClient extends ChangeNotifier {
   void _handleDone() {
     print("Connection closed.");
     syncState = SyncState.idle;
+    canSync = false;
     this.notifyListeners();
   }
 
   void _handleError(dynamic error) {
     print("WebSocket error: $error");
     syncState = SyncState.idle;
+    canSync = false;
     this.notifyListeners();
   }
 
